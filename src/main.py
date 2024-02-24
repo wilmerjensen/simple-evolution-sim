@@ -13,10 +13,8 @@ WINDOW_HEIGHT = GRID_SIZE_Y * BLOCK_SIZE
 WINDOW_SIZE = (WINDOW_WIDTH, WINDOW_HEIGHT)
 WINDOW = pygame.display.set_mode(WINDOW_SIZE)
 
-COLOR_BACKGROUND = (255, 255, 255)
-COLOR_LINES = (200, 200, 200)
-
 POPULATION = 250
+TICKS_PER_SECOND = 5
 
 
 def main():
@@ -26,7 +24,7 @@ def main():
     clock = pygame.time.Clock()
     running = True
 
-    grid = environment.Grid(WINDOW, GRID_SIZE_X, GRID_SIZE_Y, BLOCK_SIZE, COLOR_BACKGROUND, COLOR_LINES)
+    grid = environment.Grid(WINDOW, GRID_SIZE_X, GRID_SIZE_Y, BLOCK_SIZE)
     creature_list = creatures.Creature.generate_creatures(grid, POPULATION)
 
     while running:
@@ -40,7 +38,7 @@ def main():
         grid.draw_grid()
 
         pygame.display.update()
-        clock.tick(5)
+        clock.tick(TICKS_PER_SECOND)
 
     pygame.quit()
 

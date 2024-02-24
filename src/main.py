@@ -1,6 +1,5 @@
 import sys
 import pygame
-import random
 
 import environment
 import creatures
@@ -21,7 +20,7 @@ POPULATION = 250
 
 
 def main():
-    
+
     pygame.init()
 
     clock = pygame.time.Clock()
@@ -34,8 +33,6 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit()
-
-        #WINDOW.fill(COLOR_BACKGROUND)
 
         for c in creature_list:
             c.move()

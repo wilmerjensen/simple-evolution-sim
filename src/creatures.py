@@ -26,7 +26,7 @@ class Creature:
 
         self.block: Block = block
         self.grid: Grid = self.block.grid
-        #self.color = self.get_random_color()
+        self.vision_range = 5
         self.set_random_color()
 
         self.block.add_creature(self)
@@ -67,6 +67,20 @@ class Creature:
 
     def get_position(self):
         return self.block.pos_x, self.block.pos_y
+    
+    def get_position_x(self):
+        return self.block.pos_x
+    
+    def get_position_y(self):
+        return self.block.pos_y
+    
+    def get_population_within_vision(self):
+        count = 0
+        for x in range(self.get_position_x - self.vision_range, self.get_position_x + self.vision_range):
+            for y in range(self.get_position_y - self.vision_range, self.get_position_y + self.vision_range):
+                if self.grid.get_block(x, y) != self.block and self.grid.get_block(x, y).is_occupied():
+                    count += 1
+        return count
     
     def generate_creatures(grid, amount):
         creatures = []

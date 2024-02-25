@@ -30,7 +30,7 @@ class Grid:
             for y in range(self.size_y):
                 self.blocks[x][y].draw()
 
-    def get_block(self, x, y):
+    def get_block(self, x, y) -> "Block":
         return self.blocks[x][y]
 
     def get_random_block(self):

@@ -1,6 +1,22 @@
 import pygame
 import random
 
+# class CreatureColors:
+
+#     colors = {
+#         "red": (255, 0, 0),
+#         "green": (0, 255, 0),
+#         "blue": (0, 0, 255),
+#         "purple": (200, 0, 200),
+#         "yellow": (150, 200, 0)
+#     }
+
+#     def get_color_rgb(color):
+#         return CreatureColors.colors[color]
+    
+#     def get_random_color():
+#         return random.choice(list(CreatureColors.colors.keys))
+
 class Creature:
 
     def __init__(self, block):
@@ -62,3 +78,5 @@ class Creature:
     
     def set_random_color(self):
         self.color = (random.randint(25, 225), random.randint(25, 225), random.randint(25, 225))
+
+    

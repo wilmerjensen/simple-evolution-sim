@@ -23,11 +23,14 @@ class Creature:
 
         from environment import Grid
         from environment import Block
+        import brain
 
         self.block: Block = block
         self.grid: Grid = self.block.grid
         self.vision_range = 5
         self.set_random_color()
+
+        self.synapse = brain.Synapse(self, brain.NeuronInput.Random, brain.NeuronOutput.MoveRight)
 
         self.block.add_creature(self)
 
@@ -38,8 +41,11 @@ class Creature:
         else:
             pygame.draw.circle(self.grid.window.display, self.color, self.block.rect.center, self.block.size / 2, 0)
 
-    def move(self):
-        move_prefs = self.determine_move_preferences()
+    def action(self):
+        self.synapse.stimulate()
+
+    def move_random(self):
+        move_prefs = self.get_random_move_prefs()
         for m in move_prefs:
             if self.move_is_possible(m):
                 self.block.remove_creature()
@@ -47,7 +53,13 @@ class Creature:
                 self.block.add_creature(self)
                 break
 
-    def determine_move_preferences(self):
+    def move(self, direction):
+        if self.move_is_possible(direction):
+            self.block.remove_creature()
+            self.block = self.block.get_adjacent_block(direction)
+            self.block.add_creature(self)
+
+    def get_random_move_prefs(self):
         move_prefs = ["right", "left", "up", "down"]
         random.shuffle(move_prefs)
         return move_prefs

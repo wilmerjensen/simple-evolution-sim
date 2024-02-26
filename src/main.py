@@ -9,8 +9,8 @@ GRID_SIZE_X = 50
 GRID_SIZE_Y = 50
 BLOCK_SIZE = 25
 
-POPULATION = 10
-TICKS_PER_SECOND = 10
+POPULATION = 1
+TICKS_PER_SECOND = 1
 
 white = (255, 255, 255)
 green = (0, 255, 0)
@@ -31,6 +31,7 @@ def main():
     creature_list = creatures.Creature.generate_creatures(game_window.grid, POPULATION)
 
     while running:
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit()
@@ -41,7 +42,7 @@ def main():
 
         if game_window.paused == False:
             for c in creature_list:
-                c.move()
+                c.action()
                 
         game_window.draw()
 

@@ -90,11 +90,11 @@ class Window:
         return
     
     def set_right_panel_text(self):
-        for text in self.texts:
-            text = ""
+        for i in range(len(self.texts)):
+            self.texts[i] = ""
         if self.selected_block == None:
             return
-        
+
         self.texts[0] = f"Block: [{self.selected_block.pos_x}, {self.selected_block.pos_y}]"
         self.texts[1] = ""
         if self.selected_block.creature != None:

@@ -18,7 +18,7 @@ class Window:
         self.grid_height = self.grid_size_y * self.block_size
 
         self.right_panel_size = (self.grid_width) * 0.65
-        self.right_panel_lines = 25
+        self.right_panel_lines = 30
 
         self.width = self.grid_width + self.right_panel_size
         self.height = self.grid_height
@@ -110,7 +110,7 @@ class Window:
                 synapse = self.selected_creature.brain.synapses[i]
                 self.texts[i + i + 3] = f"{synapse.input.type.name} -> {synapse.output.type.name} (w: {round(synapse.weight, 4)})"
                 #self.texts[i + i + 4] = f"input: {round(synapse.output.input_value, 4)} | activation: {round(synapse.output.activation_value, 4)}"
-                self.texts[i + i + 4] = f"input: {round(synapse.output.input_value, 4)} | activation: {round(max(synapse.output.activation_value, 0), 4) * 100} %"
+                self.texts[i + i + 4] = f"input raw: {round(synapse.output.input_unweighted, 4)} | input weighted: {round(synapse.output.input_value, 4)} | activation: {round(max(synapse.output.activation_value, 0) * 100, 4)} %"
 
         return
 

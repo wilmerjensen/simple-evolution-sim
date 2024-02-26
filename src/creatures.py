@@ -46,14 +46,17 @@ class Creature:
         #self.synapse.stimulate()
         self.brain.action()
 
+    # def move_random(self):
+    #     move_prefs = self.get_random_move_prefs()
+    #     for m in move_prefs:
+    #         if self.move_is_possible(m):
+    #             self.block.remove_creature()
+    #             self.block = self.block.get_adjacent_block(m)
+    #             self.block.add_creature(self)
+    #             break
+        
     def move_random(self):
-        move_prefs = self.get_random_move_prefs()
-        for m in move_prefs:
-            if self.move_is_possible(m):
-                self.block.remove_creature()
-                self.block = self.block.get_adjacent_block(m)
-                self.block.add_creature(self)
-                break
+        self.move(random.choice(["right", "left", "up", "down"]))
 
     def move(self, direction):
         if self.move_is_possible(direction):

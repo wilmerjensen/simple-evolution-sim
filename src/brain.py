@@ -7,12 +7,18 @@ class NeuronInputType(Enum):
     LocationY = 2
     PopulationDensityClose = 3
     Random = 4
+    BlockedRight = 5
+    BlockedLeft = 6
+    BlockedUp = 7
+    BlockedDown = 8
+
 
 class NeuronOutputType(Enum):
     MoveRight = 1
     MoveLeft = 2
     MoveUp = 3
     MoveDown = 4
+    MoveRandom = 5
 
 class NeuronInput:
 
@@ -31,6 +37,14 @@ class NeuronInput:
             return NeuronInput.normalize_input(self.creature.get_population_within_vision(), 0, (self.creature.vision_range * self.creature.vision_range) - 1)
         elif self.type is NeuronInputType.Random:
             return random.uniform(-1.0, 1.0)
+        elif self.type is NeuronInputType.BlockedRight:
+            return -1 if self.creature.move_is_possible("right") else 1
+        elif self.type is NeuronInputType.BlockedLeft:
+            return -1 if self.creature.move_is_possible("left") else 1
+        elif self.type is NeuronInputType.BlockedUp:
+            return -1 if self.creature.move_is_possible("up") else 1
+        elif self.type is NeuronInputType.BlockedDown:
+            return -1 if self.creature.move_is_possible("down") else 1
         return 0
 
     def normalize_input(value, min, max):
@@ -43,6 +57,7 @@ class NeuronOutput:
     def __init__(self, brain: "Brain", type: NeuronInputType) -> None:
         self.creature = brain.creature
         self.type = type
+        self.input_unweighted = 0
         self.input_value = 0
         self.activation_value = 0
 
@@ -78,8 +93,9 @@ class Synapse:
         self.weight = random.uniform(-4.0, 4.0)
 
     def stimulate(self):
-        input_value = self.input.get_value() * self.weight
-        self.output.input_value += input_value
+        #input_value = self.input.get_value() * self.weight
+        self.output.input_unweighted += self.input.get_value()
+        self.output.input_value += self.input.get_value() * self.weight
 
         # cutoff = random.random()
         # if input_value > cutoff:
@@ -99,12 +115,13 @@ class Brain:
         self.generate()
 
     def action(self):
-        self.reset_activation_values()
+        self.reset_output_neurons()
         self.stimulate_synapses()
         self.call_output_activations()
 
-    def reset_activation_values(self):
+    def reset_output_neurons(self):
         for output in self.outputs:
+            output.input_unweighted = 0
             output.input_value = 0
             output.activation_value = 0
 

@@ -24,7 +24,7 @@ class Window:
         self.height = self.grid_height
         self.size = (self.width, self.height)
 
-        self.font = pygame.font.Font('freesansbold.ttf', 32)
+        self.font = pygame.font.Font('freesansbold.ttf', 20)
         
         self.texts = []
         self.text_rects = []
@@ -97,9 +97,12 @@ class Window:
 
         self.texts[0] = f"Block: [{self.selected_block.pos_x}, {self.selected_block.pos_y}]"
         self.texts[1] = ""
+
         if self.selected_block.creature != None:
             self.texts[2] = "Creature"
-            self.texts[3] = f"Color: {self.selected_block.creature.color}"
+            for i in range(self.selected_block.creature.brain.num_synapses):
+                synapse = self.selected_block.creature.brain.synapses[i]
+                self.texts[i + 3] = f"{synapse.input.type.name} -> {synapse.output.type.name}"
 
         return
 

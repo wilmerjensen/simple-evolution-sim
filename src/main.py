@@ -5,12 +5,12 @@ import window
 import environment
 import creatures
 
-GRID_SIZE_X = 50
-GRID_SIZE_Y = 50
-BLOCK_SIZE = 25
+GRID_SIZE_X = 100
+GRID_SIZE_Y = 100
+BLOCK_SIZE = 12
 
-POPULATION = 1
-TICKS_PER_SECOND = 1
+POPULATION = 500
+TICKS_PER_SECOND = 10
 
 white = (255, 255, 255)
 green = (0, 255, 0)
@@ -42,7 +42,7 @@ def main():
 
         if game_window.paused == False:
             for c in creature_list:
-                c.action()
+                c.move_random()
                 
         game_window.draw()
 

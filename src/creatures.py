@@ -30,7 +30,7 @@ class Creature:
         self.vision_range = 5
         self.set_random_color()
 
-        self.synapse = brain.Synapse(self, brain.NeuronInput.Random, brain.NeuronOutput.MoveRight)
+        self.brain = brain.Brain(self, 2)
 
         self.block.add_creature(self)
 

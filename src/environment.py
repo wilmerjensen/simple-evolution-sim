@@ -5,7 +5,8 @@ import random
 class Grid:
 
     def __init__(self, window, size_x, size_y, block_size, color_bg = (255, 255, 255), color_lines = (200, 200, 200)):
-        self.window = window
+        from window import Window
+        self.window: Window = window
         self.size_x = size_x
         self.size_y = size_y
         self.block_size = block_size
@@ -25,7 +26,7 @@ class Grid:
         return blocks
 
     def draw_grid(self):
-        self.window.fill(self.color_bg)
+        self.window.display.fill(self.color_bg)
         for x in range(self.size_x):
             for y in range(self.size_y):
                 self.blocks[x][y].draw()
@@ -81,4 +82,4 @@ class Block:
         if self.creature != None:
             self.creature.draw()
         else:
-            pygame.draw.rect(self.grid.window, self.grid.color_lines, self.rect, 1)
+            pygame.draw.rect(self.grid.window.display, self.grid.color_lines, self.rect, 1)

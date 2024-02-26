@@ -24,6 +24,9 @@ class Window:
 
         self.display = display
 
+    def on_click(self, pos):
+        return
+
     def create_display(self):
         self.display = pygame.display.set_mode(self.size)
         pygame.display.set_caption(self.title)

@@ -35,8 +35,8 @@ def main():
     clock = pygame.time.Clock()
     running = True
 
-    grid = environment.Grid(game_window.display, game_window.grid_size_x, game_window.grid_size_x, game_window.block_size)
-    creature_list = creatures.Creature.generate_creatures(grid, POPULATION)
+    game_window.grid = environment.Grid(game_window, game_window.grid_size_x, game_window.grid_size_x, game_window.block_size)
+    creature_list = creatures.Creature.generate_creatures(game_window.grid, POPULATION)
 
     font = pygame.font.Font('freesansbold.ttf', 32)
     textrect = pygame.Rect(game_window.grid_width, 0, game_window.right_panel_size, game_window.height / 8)
@@ -51,7 +51,7 @@ def main():
         for c in creature_list:
             c.move()
 
-        grid.draw_grid()
+        game_window.grid.draw_grid()
         draw_selected_block()
 
         text = font.render('Test', True, black, white)

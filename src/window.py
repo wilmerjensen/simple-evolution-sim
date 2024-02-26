@@ -17,7 +17,7 @@ class Window:
         self.grid_width = self.grid_size_x * self.block_size
         self.grid_height = self.grid_size_y * self.block_size
 
-        self.right_panel_size = (self.grid_width) * 0.35
+        self.right_panel_size = (self.grid_width) * 0.65
         self.right_panel_lines = 25
 
         self.width = self.grid_width + self.right_panel_size
@@ -47,6 +47,7 @@ class Window:
         return
 
     def draw_right_panel(self):
+        self.set_right_panel_text()
         for i, rect in enumerate(self.text_rects):
             text = self.font.render(self.texts[i], True, (0, 0, 0), (255, 255, 255))
             self.display.blit(text, rect)
@@ -103,14 +104,16 @@ class Window:
         self.texts[0] = f"Block: [{self.selected_block.pos_x}, {self.selected_block.pos_y}]"
         self.texts[1] = ""
 
-        if self.selected_block.creature != None:
-            self.texts[2] = "Creature"
-            for i in range(self.selected_block.creature.brain.num_synapses):
-                synapse = self.selected_block.creature.brain.synapses[i]
-                self.texts[i + 3] = f"{synapse.input.type.name} -> {synapse.output.type.name}"
+        if self.selected_creature != None:
+            self.texts[2] = "CREATURE BRAIN:"
+            for i in range(self.selected_creature.brain.num_synapses):
+                synapse = self.selected_creature.brain.synapses[i]
+                self.texts[i + i + 3] = f"{synapse.input.type.name} -> {synapse.output.type.name} (w: {round(synapse.weight, 4)})"
+                #self.texts[i + i + 4] = f"input: {round(synapse.output.input_value, 4)} | activation: {round(synapse.output.activation_value, 4)}"
+                self.texts[i + i + 4] = f"input: {round(synapse.output.input_value, 4)} | activation: {round(max(synapse.output.activation_value, 0), 4) * 100} %"
 
         return
 
         # self.text = self.font.render('Test', True, black, white)
         # game_window.display.blit(text, textrect)
-        # pygame.draw.rect(game_window.display, white, textrect, 1)
+        # pygame.draw.rect(game_window.display, white, textrect, 1) 

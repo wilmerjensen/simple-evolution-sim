@@ -1,4 +1,5 @@
 import random
+import math
 from enum import Enum
 
 class NeuronInputType(Enum):
@@ -42,7 +43,11 @@ class NeuronOutput:
     def __init__(self, brain: "Brain", type: NeuronInputType) -> None:
         self.creature = brain.creature
         self.type = type
+        self.input_value = 0
         self.activation_value = 0
+
+    def calculate_activation_value(self):
+        self.activation_value = math.tanh(self.input_value)
 
     def activation(self) -> bool:
         cutoff = random.random()
@@ -74,7 +79,7 @@ class Synapse:
 
     def stimulate(self):
         input_value = self.input.get_value() * self.weight
-        self.output.activation_value += input_value
+        self.output.input_value += input_value
 
         # cutoff = random.random()
         # if input_value > cutoff:
@@ -100,11 +105,18 @@ class Brain:
 
     def reset_activation_values(self):
         for output in self.outputs:
+            output.input_value = 0
             output.activation_value = 0
 
     def stimulate_synapses(self):
         for synapse in self.synapses:
+            synapse: Synapse
             synapse.stimulate()
+        for output in self.outputs:
+            output: NeuronOutput
+            output.calculate_activation_value()
+        self.synapses = sorted(self.synapses, key=lambda x: x.output.input_value, reverse=True)
+        self.outputs = sorted(self.outputs, key=lambda x: x.input_value, reverse=True)
 
     def call_output_activations(self):
         for output in self.outputs:
@@ -146,3 +158,7 @@ class Brain:
             if output.type is type:
                 return i
         return -1
+    
+    def normalize_value(value, min, max):
+        return (value - min) / (max - min) * 2 - 1
+    

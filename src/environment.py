@@ -12,6 +12,7 @@ class Grid:
         self.block_size = block_size
         self.color_bg = color_bg
         self.color_lines = color_lines
+        # self.kill_zone = pygame.Rect(0, 0, (self.size_x * self.block_size) / 10, self.size_y * self.block_size)
 
         # --> generate block instances ans store them in 2D list
         self.blocks = self.__create_blocks__()
@@ -27,6 +28,7 @@ class Grid:
 
     def draw_grid(self):
         self.window.display.fill(self.color_bg)
+        # pygame.draw.rect(self.window.display, (125, 50, 50), self.kill_zone, 0)
         for x in range(self.size_x):
             for y in range(self.size_y):
                 self.blocks[x][y].draw()

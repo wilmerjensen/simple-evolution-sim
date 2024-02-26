@@ -32,7 +32,11 @@ class Creature:
         self.block.add_creature(self)
 
     def draw(self):
-        pygame.draw.circle(self.grid.window.display, self.color, self.block.rect.center, self.block.size / 2, 0)
+        if self.block is self.grid.window.selected_block:
+            pygame.draw.circle(self.grid.window.display, self.color, self.block.rect.center, self.block.size / 2, 0)
+            pygame.draw.rect(self.grid.window.display, (200, 0, 0), self.block.rect, 1)
+        else:
+            pygame.draw.circle(self.grid.window.display, self.color, self.block.rect.center, self.block.size / 2, 0)
 
     def move(self):
         move_prefs = self.determine_move_preferences()

@@ -81,5 +81,7 @@ class Block:
     def draw(self):
         if self.creature != None:
             self.creature.draw()
+        elif self is self.grid.window.selected_block:
+            pygame.draw.rect(self.grid.window.display, (200, 0, 0), self.rect, 1)
         else:
             pygame.draw.rect(self.grid.window.display, self.grid.color_lines, self.rect, 1)

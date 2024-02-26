@@ -30,7 +30,8 @@ class Creature:
         self.vision_range = 5
         self.set_random_color()
 
-        self.brain = brain.Brain(self, 2)
+        self.num_synapses = 5
+        self.brain = brain.Brain(self, self.num_synapses)
 
         self.block.add_creature(self)
 
@@ -42,7 +43,8 @@ class Creature:
             pygame.draw.circle(self.grid.window.display, self.color, self.block.rect.center, self.block.size / 2, 0)
 
     def action(self):
-        self.synapse.stimulate()
+        #self.synapse.stimulate()
+        self.brain.action()
 
     def move_random(self):
         move_prefs = self.get_random_move_prefs()
@@ -55,8 +57,12 @@ class Creature:
 
     def move(self, direction):
         if self.move_is_possible(direction):
+            new_block = self.block.get_adjacent_block(direction)
+            if self == self.grid.window.selected_creature:
+                self.grid.window.selected_block = new_block
+
             self.block.remove_creature()
-            self.block = self.block.get_adjacent_block(direction)
+            self.block = new_block
             self.block.add_creature(self)
 
     def get_random_move_prefs(self):
@@ -92,8 +98,13 @@ class Creature:
     
     def get_population_within_vision(self):
         count = 0
-        for x in range(self.get_position_x - self.vision_range, self.get_position_x + self.vision_range):
-            for y in range(self.get_position_y - self.vision_range, self.get_position_y + self.vision_range):
+        max_vision_left = max(self.get_position_x() - self.vision_range, 0)
+        max_vision_right = min(self.get_position_x() + self.vision_range, self.grid.size_x - 1)
+        max_vision_up = max(self.get_position_y() - self.vision_range, 0)
+        max_vision_right = min(self.get_position_y() + self.vision_range, self.grid.size_y - 1)
+
+        for x in range(max_vision_left, max_vision_right):
+            for y in range(max_vision_up, max_vision_right):
                 if self.grid.get_block(x, y) != self.block and self.grid.get_block(x, y).is_occupied():
                     count += 1
         return count

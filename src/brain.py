@@ -22,13 +22,13 @@ class NeuronInput:
         self.type = type
 
     def get_value(self):
-        if self.type is NeuronInput.LocationX:
-            return NeuronInput.normalize_input(self.creature.get_position_x, 0, self.creature.grid.size_x)
-        elif self.type is NeuronInput.LocationY:
-            return NeuronInput.normalize_input(self.creature.get_position_y, 0, self.creature.grid.size_y)
-        elif self.type is NeuronInput.PopulationDensityClose:
-            return NeuronInput.normalize_input(self.creature.get_population_within_vision, 0, (self.creature.vision_range * self.creature.vision_range) - 1)
-        elif self.type is NeuronInput.Random:
+        if self.type is NeuronInputType.LocationX:
+            return NeuronInput.normalize_input(self.creature.get_position_x(), 0, self.creature.grid.size_x)
+        elif self.type is NeuronInputType.LocationY:
+            return NeuronInput.normalize_input(self.creature.get_position_y(), 0, self.creature.grid.size_y)
+        elif self.type is NeuronInputType.PopulationDensityClose:
+            return NeuronInput.normalize_input(self.creature.get_population_within_vision(), 0, (self.creature.vision_range * self.creature.vision_range) - 1)
+        elif self.type is NeuronInputType.Random:
             return random.uniform(-1.0, 1.0)
         return 0
 
@@ -42,15 +42,23 @@ class NeuronOutput:
     def __init__(self, brain: "Brain", type: NeuronInputType) -> None:
         self.creature = brain.creature
         self.type = type
+        self.activation_value = 0
+
+    def activation(self) -> bool:
+        cutoff = random.random()
+        if self.activation_value > cutoff:
+            self.call_output_function()
+            return True
+        return False
 
     def call_output_function(self):
-        if self.type is NeuronOutput.MoveRight:
+        if self.type is NeuronOutputType.MoveRight:
             self.creature.move("right")
-        elif self.type is NeuronOutput.MoveLeft:
+        elif self.type is NeuronOutputType.MoveLeft:
             self.creature.move("left")
-        elif self.type is NeuronOutput.MoveUp:
+        elif self.type is NeuronOutputType.MoveUp:
             self.creature.move("up")
-        elif self.type is NeuronOutput.MoveDown:
+        elif self.type is NeuronOutputType.MoveDown:
             self.creature.move("down")
         return
 
@@ -66,9 +74,11 @@ class Synapse:
 
     def stimulate(self):
         input_value = self.input.get_value() * self.weight
-        cutoff = random.random()
-        if input_value > cutoff:
-            self.output.call_output_function()
+        self.output.activation_value += input_value
+
+        # cutoff = random.random()
+        # if input_value > cutoff:
+        #     self.output.call_output_function()
 
 class Brain:
 
@@ -83,11 +93,56 @@ class Brain:
 
         self.generate()
 
+    def action(self):
+        self.reset_activation_values()
+        self.stimulate_synapses()
+        self.call_output_activations()
+
+    def reset_activation_values(self):
+        for output in self.outputs:
+            output.activation_value = 0
+
+    def stimulate_synapses(self):
+        for synapse in self.synapses:
+            synapse.stimulate()
+
+    def call_output_activations(self):
+        for output in self.outputs:
+            fired = output.activation()
+            if fired == True:
+                break
+
     def generate(self):
         for i in range(self.num_synapses):
-            new_input = NeuronInput(self, random.choice(list(NeuronInputType)))
-            new_output = NeuronOutput(self, random.choice(list(NeuronOutputType)))
-            new_synapse = Synapse(self, new_input, new_output)
-            self.inputs.append(new_input)
-            self.outputs.append(new_output)
-            self.synapses.append(new_synapse)
+            self.add_synapse()
+
+    def add_synapse(self):
+        input_type = random.choice(list(NeuronInputType))
+        output_type = random.choice(list(NeuronOutputType))
+
+        if self.find_input_type(input_type) >= 0:
+            input = self.inputs[self.find_input_type(input_type)]
+        else:
+            input = NeuronInput(self, input_type)
+            self.inputs.append(input)
+
+        if self.find_output_type(output_type) >= 0:
+            output = self.outputs[self.find_output_type(output_type)]
+        else:
+            output = NeuronOutput(self, output_type)
+            self.outputs.append(output)
+
+        synapse = Synapse(self, input, output)
+        self.synapses.append(synapse)
+
+    def find_input_type(self, type: NeuronInputType):
+        for i, inputs in enumerate(self.inputs):
+            if inputs.type is type:
+                return i
+        return -1
+
+    def find_output_type(self, type: NeuronOutputType):
+        for i, output in enumerate(self.outputs):
+            if output.type is type:
+                return i
+        return -1

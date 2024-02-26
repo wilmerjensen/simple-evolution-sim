@@ -34,6 +34,7 @@ class Window:
 
         self.grid: environment.Grid = None
         self.selected_block = None
+        self.selected_creature = None
 
         self.display = display
         self.paused = False
@@ -65,6 +66,10 @@ class Window:
                 block = self.grid.get_block(x, y)
                 if block.rect.collidepoint(pos):
                     self.selected_block = block
+                    if block.creature != None:
+                        self.selected_creature = block.creature
+                    else:
+                        self.selected_creature = None
                     self.set_right_panel_text()
                     break
         return

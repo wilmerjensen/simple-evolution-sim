@@ -10,7 +10,7 @@ GRID_SIZE_Y = 100
 BLOCK_SIZE = 12
 
 POPULATION = 500
-TICKS_PER_SECOND = 10
+TICKS_PER_SECOND = 30
 
 white = (255, 255, 255)
 green = (0, 255, 0)
@@ -42,7 +42,7 @@ def main():
 
         if game_window.paused == False:
             for c in creature_list:
-                c.move_random()
+                c.action()
                 
         game_window.draw()
 

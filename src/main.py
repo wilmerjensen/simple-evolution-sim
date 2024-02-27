@@ -9,11 +9,11 @@ GRID_SIZE_X = 100
 GRID_SIZE_Y = 100
 BLOCK_SIZE = 12
 
-POPULATION = 200
-SYNAPSES = 8
+POPULATION = 500
+SYNAPSES = 4
 
 TICKS_PER_SECOND = 60
-TICKS_PER_GENERATION = 300
+TICKS_PER_GENERATION = 0
 GENERATION_TICK_COUNT = 0
 GENERATION_COUNT = 0
 
@@ -33,7 +33,7 @@ def main():
     clock = pygame.time.Clock()
 
     game_window.grid = environment.Grid(game_window, game_window.grid_size_x, game_window.grid_size_x, game_window.block_size)
-    game_window.grid.add_kill_zone((0,0), ((GRID_SIZE_X * BLOCK_SIZE) / 10, GRID_SIZE_Y * BLOCK_SIZE))
+    #game_window.grid.add_kill_zone((0,0), ((GRID_SIZE_X * BLOCK_SIZE) / 10, GRID_SIZE_Y * BLOCK_SIZE))
 
     creature_list = creatures.Creature.generate_creatures(game_window.grid, POPULATION, SYNAPSES)
 
@@ -60,7 +60,7 @@ def main():
         clock.tick(TICKS_PER_SECOND)
 
         generation_tick_count += 1
-        if generation_tick_count == TICKS_PER_GENERATION:
+        if TICKS_PER_GENERATION > 0 and generation_tick_count == TICKS_PER_GENERATION:
             print("New Generation!")
             generation_tick_count = 0
             generation_count += 1

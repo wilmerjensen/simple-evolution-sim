@@ -19,7 +19,7 @@ import random
 
 class Creature:
 
-    def __init__(self, block):
+    def __init__(self, block, num_synapses = 5):
 
         from environment import Grid
         from environment import Block
@@ -30,7 +30,7 @@ class Creature:
         self.vision_range = 5
         self.set_random_color()
 
-        self.num_synapses = 5
+        self.num_synapses = num_synapses
         self.brain = brain.Brain(self, self.num_synapses)
 
         self.block.add_creature(self)
@@ -43,7 +43,6 @@ class Creature:
             pygame.draw.circle(self.grid.window.display, self.color, self.block.rect.center, self.block.size / 2, 0)
 
     def action(self):
-        #self.synapse.stimulate()
         self.brain.action()
 
     # def move_random(self):
@@ -112,12 +111,12 @@ class Creature:
                     count += 1
         return count
     
-    def generate_creatures(grid, amount):
+    def generate_creatures(grid, amount, num_synapses=5):
         creatures = []
         for i in range(amount):
             block = grid.get_random_block()
             if block != None:
-                creatures.append(Creature(block))
+                creatures.append(Creature(block, num_synapses))
         return creatures
     
     def set_random_color(self):

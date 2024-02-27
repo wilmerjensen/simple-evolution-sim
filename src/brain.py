@@ -30,11 +30,11 @@ class NeuronInput:
 
     def get_value(self):
         if self.type is NeuronInputType.LocationX:
-            return NeuronInput.normalize_input(self.creature.get_position_x(), 0, self.creature.grid.size_x)
+            return Brain.normalize_value(self.creature.get_position_x(), 0, self.creature.grid.size_x)
         elif self.type is NeuronInputType.LocationY:
-            return NeuronInput.normalize_input(self.creature.get_position_y(), 0, self.creature.grid.size_y)
+            return Brain.normalize_value(self.creature.get_position_y(), 0, self.creature.grid.size_y)
         elif self.type is NeuronInputType.PopulationDensityClose:
-            return NeuronInput.normalize_input(self.creature.get_population_within_vision(), 0, (self.creature.vision_range * self.creature.vision_range) - 1)
+            return Brain.normalize_value(self.creature.get_population_within_vision(), 0, (self.creature.vision_range * self.creature.vision_range) - 1)
         elif self.type is NeuronInputType.Random:
             return random.uniform(-1.0, 1.0)
         elif self.type is NeuronInputType.BlockedRight:
@@ -80,6 +80,8 @@ class NeuronOutput:
             self.creature.move("up")
         elif self.type is NeuronOutputType.MoveDown:
             self.creature.move("down")
+        elif self.type is NeuronOutputType.MoveRandom:
+            self.creature.move_random()
         return
 
 class Synapse:
@@ -145,9 +147,35 @@ class Brain:
         for i in range(self.num_synapses):
             self.add_synapse()
 
+    def get_synapses(self, input_type: NeuronInputType = None, output_type: NeuronOutputType = None):
+        synapse_list = []
+        for s in self.synapses:
+            s: Synapse
+            synapse_is_match = True
+            if input_type != None and s.input.type != input_type:
+                synapse_is_match = False
+            if output_type != None and s.output.type != output_type:
+                synapse_is_match = False
+            if synapse_is_match == True:
+                synapse_list.append(s)
+        return synapse_list
+
+    def get_available_output_types(self, input_type):
+        synapses_with_same_input = self.get_synapses(input_type)
+
+        taken_output_types = []
+        for s in synapses_with_same_input:
+            s: Synapse
+            taken_output_types.append(s.output.type)
+
+        available_outputs = list(filter(lambda x: x not in taken_output_types, list(NeuronOutputType)))
+        return available_outputs
+
     def add_synapse(self):
         input_type = random.choice(list(NeuronInputType))
-        output_type = random.choice(list(NeuronOutputType))
+
+        available_outputs = self.get_available_output_types(input_type)
+        output_type = random.choice(available_outputs)
 
         if self.find_input_type(input_type) >= 0:
             input = self.inputs[self.find_input_type(input_type)]
@@ -178,4 +206,3 @@ class Brain:
     
     def normalize_value(value, min, max):
         return (value - min) / (max - min) * 2 - 1
-    

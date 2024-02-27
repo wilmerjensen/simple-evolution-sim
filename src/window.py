@@ -18,7 +18,7 @@ class Window:
         self.grid_height = self.grid_size_y * self.block_size
 
         self.right_panel_size = (self.grid_width) * 0.65
-        self.right_panel_lines = 30
+        self.right_panel_lines = 40
 
         self.width = self.grid_width + self.right_panel_size
         self.height = self.grid_height

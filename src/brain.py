@@ -172,9 +172,17 @@ class Brain:
         return available_outputs
 
     def add_synapse(self):
-        input_type = random.choice(list(NeuronInputType))
+        available_inputs = list(NeuronInputType)
+        available_outputs = []
 
-        available_outputs = self.get_available_output_types(input_type)
+        while len(available_inputs) > 0:
+            input_type = random.choice(available_inputs)
+            available_outputs = self.get_available_output_types(input_type)
+            if len(available_outputs) == 0:
+                available_inputs.remove(input_type)
+            else:
+                break
+
         output_type = random.choice(available_outputs)
 
         if self.find_input_type(input_type) >= 0:

@@ -13,6 +13,7 @@ POPULATION = 200
 SYNAPSES = 8
 
 TICKS_PER_SECOND = 30
+TICKS_PER_GENERATION = 300
 
 white = (255, 255, 255)
 green = (0, 255, 0)
@@ -30,6 +31,9 @@ def main():
     clock = pygame.time.Clock()
 
     game_window.grid = environment.Grid(game_window, game_window.grid_size_x, game_window.grid_size_x, game_window.block_size)
+    game_window.grid.add_kill_zone((0,0), ((GRID_SIZE_X * BLOCK_SIZE) / 10, GRID_SIZE_Y * BLOCK_SIZE))
+
+
     creature_list = creatures.Creature.generate_creatures(game_window.grid, POPULATION, SYNAPSES)
 
     while running:

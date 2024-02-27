@@ -4,7 +4,7 @@ import random
 
 class Grid:
 
-    def __init__(self, window, size_x, size_y, block_size, color_bg = (255, 255, 255), color_lines = (200, 200, 200)):
+    def __init__(self, window, size_x, size_y, block_size, color_bg = (225, 225, 225), color_lines = (175, 175, 175)):
         from window import Window
         self.window: Window = window
         self.size_x = size_x
@@ -12,7 +12,8 @@ class Grid:
         self.block_size = block_size
         self.color_bg = color_bg
         self.color_lines = color_lines
-        # self.kill_zone = pygame.Rect(0, 0, (self.size_x * self.block_size) / 10, self.size_y * self.block_size)
+        self.kill_zones = []
+        #self.kill_zone = pygame.Rect(0, 0, (self.size_x * self.block_size) / 10, self.size_y * self.block_size)
 
         # --> generate block instances ans store them in 2D list
         self.blocks = self.__create_blocks__()
@@ -26,9 +27,13 @@ class Grid:
             blocks.append(col)
         return blocks
 
+    def add_kill_zone(self, position_source, size):
+        self.kill_zones.append(pygame.Rect(position_source, size))
+
     def draw_grid(self):
         self.window.display.fill(self.color_bg)
-        # pygame.draw.rect(self.window.display, (125, 50, 50), self.kill_zone, 0)
+        for kz in self.kill_zones:
+           pygame.draw.rect(self.window.display, (125, 50, 50), kz, 0)
         for x in range(self.size_x):
             for y in range(self.size_y):
                 self.blocks[x][y].draw()
@@ -83,7 +88,20 @@ class Block:
     def draw(self):
         if self.creature != None:
             self.creature.draw()
-        elif self is self.grid.window.selected_block:
-            pygame.draw.rect(self.grid.window.display, (200, 0, 0), self.rect, 1)
+            return
+        
+        border_color = self.grid.color_lines
+
+        if self is self.grid.window.selected_block:
+            border_color = (200, 0, 0)
+            #pygame.draw.rect(self.grid.window.display, (200, 0, 0), self.rect, 1)
         else:
-            pygame.draw.rect(self.grid.window.display, self.grid.color_lines, self.rect, 1)
+            for kz in self.grid.kill_zones:
+                kz: pygame.Rect
+                if kz.contains(self.rect):
+                    border_color = (150, 100, 100)
+                    #pygame.draw.rect(self.grid.window.display, (255, 255, 255), self.rect, 1)
+                
+                #pygame.draw.rect(self.grid.window.display, self.grid.color_lines, self.rect, 1)
+
+        pygame.draw.rect(self.grid.window.display, border_color, self.rect, 1)

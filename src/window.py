@@ -24,7 +24,7 @@ class Window:
         self.height = self.grid_height
         self.size = (self.width, self.height)
 
-        self.font = pygame.font.Font('freesansbold.ttf', 20)
+        self.font = pygame.font.Font('freesansbold.ttf', 18)
         
         self.texts = []
         self.text_rects = []
@@ -49,17 +49,10 @@ class Window:
     def draw_right_panel(self):
         self.set_right_panel_text()
         for i, rect in enumerate(self.text_rects):
-            text = self.font.render(self.texts[i], True, (0, 0, 0), (255, 255, 255))
+            text = self.font.render(self.texts[i], True, (0, 0, 0), (225, 225, 225))
             self.display.blit(text, rect)
-            pygame.draw.rect(self.display, (225, 225, 225), rect, 1)
+            pygame.draw.rect(self.display, (175, 175, 175), rect, 1)
         return
-
-        # for text in self.texts:
-        #     self.display.blit(self.font.render(text, True, (0, 0, 0), (255, 255, 255)))
-        #     pygame.draw.rect(self.display, (255, 255, 255), textrect, 1)
-
-        # game_window.display.blit(text, textrect)
-        # pygame.draw.rect(game_window.display, white, textrect, 1)
 
     def on_click(self, pos):
         for x in range(self.grid_size_x):

@@ -35,7 +35,8 @@ class NeuronInput:
         elif self.type is NeuronInputType.LocationY:
             self.input_value = Brain.normalize_value(self.creature.get_position_y(), 0, self.creature.grid.size_y)
         elif self.type is NeuronInputType.PopulationDensityClose:
-            self.input_value = Brain.normalize_value(self.creature.get_population_within_vision(), 0, (self.creature.vision_range * self.creature.vision_range) - 1)
+            #self.input_value = Brain.normalize_value(self.creature.get_population_within_vision(), 0, (self.creature.vision_range * self.creature.vision_range) - 1)
+            self.input_value = self.creature.get_population_within_vision()
             #return random.uniform(-1.0, 1.0)
         elif self.type is NeuronInputType.Random:
             self.input_value = random.uniform(-1.0, 1.0)

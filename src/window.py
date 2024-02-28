@@ -108,6 +108,8 @@ class Window:
                 #self.texts[i + i + 4] = f"input: {round(synapse.output.input_value, 4)} | activation: {round(synapse.output.activation_value, 4)}"
                 self.texts[i + i + 4] = f"input raw: {round(synapse.input.input_value, 4)} | input weighted: {round(synapse.output.input_value, 4)} | activation: {round(max(synapse.output.activation_value, 0) * 100, 4)} %"
 
+            self.texts[len(self.texts) - 1] = f"Creatures in vision: {self.selected_creature.get_population_within_vision()}"
+
         return
 
         # self.text = self.font.render('Test', True, black, white)

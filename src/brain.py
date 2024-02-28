@@ -31,13 +31,11 @@ class NeuronInput:
 
     def calculate_input_value(self):
         if self.type is NeuronInputType.LocationX:
-            self.input_value = Brain.normalize_value(self.creature.get_position_x(), 0, self.creature.grid.size_x)
+            self.input_value = Brain.normalize_value(self.creature.block.pos_x, 0, self.creature.grid.size_x)
         elif self.type is NeuronInputType.LocationY:
-            self.input_value = Brain.normalize_value(self.creature.get_position_y(), 0, self.creature.grid.size_y)
+            self.input_value = Brain.normalize_value(self.creature.block.pos_y, 0, self.creature.grid.size_y)
         elif self.type is NeuronInputType.PopulationDensityClose:
-            #self.input_value = Brain.normalize_value(self.creature.get_population_within_vision(), 0, (self.creature.vision_range * self.creature.vision_range) - 1)
-            self.input_value = self.creature.get_population_within_vision()
-            #return random.uniform(-1.0, 1.0)
+            self.input_value = Brain.normalize_value(self.creature.get_population_within_vision(), 0, (self.creature.vision_range * self.creature.vision_range) - 1)
         elif self.type is NeuronInputType.Random:
             self.input_value = random.uniform(-1.0, 1.0)
         elif self.type is NeuronInputType.BlockedRight:

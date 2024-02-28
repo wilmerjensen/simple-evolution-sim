@@ -27,7 +27,7 @@ class Creature:
 
         self.block: Block = block
         self.grid: Grid = self.block.grid
-        self.vision_range = 3
+        self.vision_range = 5
         self.set_random_color()
 
         self.num_synapses = num_synapses
@@ -98,15 +98,27 @@ class Creature:
     def get_position_y(self):
         return self.block.pos_y
     
+    def get_vision_area(self):
+        max_vision_left = max(self.block.pos_x - self.vision_range, 0)
+        max_vision_right = min(self.block.pos_x + self.vision_range, self.grid.size_x - 1)
+        max_vision_up = max(self.block.pos_y - self.vision_range, 0)
+        max_vision_down = min(self.block.pos_y + self.vision_range, self.grid.size_y - 1)
+        return max_vision_left, max_vision_right, max_vision_up, max_vision_down
+    
     def get_population_within_vision(self):
         count = 0
-        max_vision_left = max(self.get_position_x() - self.vision_range, 0)
-        max_vision_right = min(self.get_position_x() + self.vision_range, self.grid.size_x - 1)
-        max_vision_up = max(self.get_position_y() - self.vision_range, 0)
-        max_vision_down = min(self.get_position_y() + self.vision_range, self.grid.size_y - 1)
+        # max_vision_left = max(self.get_position_x() - self.vision_range, 0)
+        # max_vision_right = min(self.get_position_x() + self.vision_range, self.grid.size_x - 1)
+        # max_vision_up = max(self.get_position_y() - self.vision_range, 0)
+        # max_vision_down = min(self.get_position_y() + self.vision_range, self.grid.size_y - 1)
 
-        for x in range(max_vision_left, max_vision_right):
-            for y in range(max_vision_up, max_vision_down):
+        max_vision_left = max(self.block.pos_x - self.vision_range, 0)
+        max_vision_right = min(self.block.pos_x + self.vision_range, self.grid.size_x - 1)
+        max_vision_up = max(self.block.pos_y - self.vision_range, 0)
+        max_vision_down = min(self.block.pos_y + self.vision_range, self.grid.size_y - 1)
+
+        for x in range(max_vision_left, max_vision_right + 1):
+            for y in range(max_vision_up, max_vision_down + 1):
                 #if self.grid.get_block(x, y).is_occupied():
                 if self.grid.blocks[x][y].creature != None:
                     count += 1

@@ -33,7 +33,7 @@ class Window:
             self.text_rects.append(pygame.Rect(self.grid_width, (self.height / self.right_panel_lines) * i, self.right_panel_size, self.height / self.right_panel_lines))
 
         self.grid: environment.Grid = None
-        self.selected_block = None
+        self.selected_block: environment.Block = None
         self.selected_creature = None
 
         self.display = display
@@ -60,19 +60,33 @@ class Window:
             for y in range(self.grid_size_y):
                 block = self.grid.get_block(x, y)
                 if block.rect.collidepoint(pos):
-                    self.selected_block = block
-                    if block.creature != None:
-                        self.selected_creature = block.creature
-                    else:
-                        self.selected_creature = None
-                    self.set_right_panel_text()
-                    break
+                    self.select_block(block)
         return
 
+    def select_block(self, block):
+        self.selected_block = block
+        if block.creature != None:
+            self.selected_creature = block.creature
+        else:
+            self.selected_creature = None
+        self.set_right_panel_text()
+       
     
     def on_key_press(self, key):
         if key == pygame.K_SPACE:
             self.toggle_pause()
+        if key == pygame.K_RIGHT:
+            if self.selected_block != None and self.selected_block.pos_x < self.grid_size_x - 1:
+                self.select_block(self.selected_block.get_adjacent_block("right"))
+        if key == pygame.K_LEFT:
+            if self.selected_block != None and self.selected_block.pos_x > 0:
+                self.select_block(self.selected_block.get_adjacent_block("left"))
+        if key == pygame.K_UP:
+            if self.selected_block != None and self.selected_block.pos_y > 0:
+                self.select_block(self.selected_block.get_adjacent_block("up"))
+        if key == pygame.K_DOWN:
+            if self.selected_block != None and self.selected_block.pos_y < self.grid_size_y - 1:
+                self.select_block(self.selected_block.get_adjacent_block("down"))
         return
 
     def toggle_pause(self):

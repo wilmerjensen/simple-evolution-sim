@@ -5,11 +5,11 @@ import window
 import environment
 import creatures
 
-GRID_SIZE_X = 100
-GRID_SIZE_Y = 100
+GRID_SIZE_X = 50
+GRID_SIZE_Y = 50
 BLOCK_SIZE = 12
 
-POPULATION = 500
+POPULATION = 100
 SYNAPSES = 8
 
 TICKS_PER_SECOND = 0
@@ -43,12 +43,7 @@ def main():
     while running:
 
         for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                sys.exit()
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                game_window.on_click(event.pos)
-            if event.type == pygame.KEYDOWN:
-                game_window.on_key_press(event.key)
+            event_handler(event, game_window)
 
         if game_window.paused == False:
             for c in creature_list:
@@ -75,6 +70,14 @@ def main():
 
     pygame.quit()
 
+def event_handler(event, game_window):
+    if event.type == pygame.QUIT:
+        sys.exit()
+    if event.type == pygame.MOUSEBUTTONDOWN:
+        game_window.on_click(event.pos)
+    if event.type == pygame.KEYDOWN:
+        game_window.on_key_press(event.key)
+    
 
 def kill_creatures_in_kill_zones(grid: environment.Grid, creature_list: list):
     for c in creature_list:

@@ -27,28 +27,26 @@ class NeuronInput:
     def __init__(self, brain: "Brain", type: NeuronInputType) -> None:
         self.creature = brain.creature
         self.type = type
+        self.input_value = 0
 
-    def get_value(self):
+    def calculate_input_value(self):
         if self.type is NeuronInputType.LocationX:
-            return Brain.normalize_value(self.creature.get_position_x(), 0, self.creature.grid.size_x)
+            self.input_value = Brain.normalize_value(self.creature.get_position_x(), 0, self.creature.grid.size_x)
         elif self.type is NeuronInputType.LocationY:
-            return Brain.normalize_value(self.creature.get_position_y(), 0, self.creature.grid.size_y)
+            self.input_value = Brain.normalize_value(self.creature.get_position_y(), 0, self.creature.grid.size_y)
         elif self.type is NeuronInputType.PopulationDensityClose:
-            return Brain.normalize_value(self.creature.get_population_within_vision(), 0, (self.creature.vision_range * self.creature.vision_range) - 1)
+            self.input_value = Brain.normalize_value(self.creature.get_population_within_vision(), 0, (self.creature.vision_range * self.creature.vision_range) - 1)
+            #return random.uniform(-1.0, 1.0)
         elif self.type is NeuronInputType.Random:
-            return random.uniform(-1.0, 1.0)
+            self.input_value = random.uniform(-1.0, 1.0)
         elif self.type is NeuronInputType.BlockedRight:
-            return -1 if self.creature.move_is_possible("right") else 1
+            self.input_value = -1 if self.creature.move_is_possible("right") else 1
         elif self.type is NeuronInputType.BlockedLeft:
-            return -1 if self.creature.move_is_possible("left") else 1
+            self.input_value = -1 if self.creature.move_is_possible("left") else 1
         elif self.type is NeuronInputType.BlockedUp:
-            return -1 if self.creature.move_is_possible("up") else 1
+            self.input_value = -1 if self.creature.move_is_possible("up") else 1
         elif self.type is NeuronInputType.BlockedDown:
-            return -1 if self.creature.move_is_possible("down") else 1
-        return 0
-
-    def normalize_input(value, min, max):
-        return (value - min) / (max - min) * 2 - 1
+            self.input_value = -1 if self.creature.move_is_possible("down") else 1
 
 class NeuronOutput:
 
@@ -57,7 +55,6 @@ class NeuronOutput:
     def __init__(self, brain: "Brain", type: NeuronInputType) -> None:
         self.creature = brain.creature
         self.type = type
-        self.input_unweighted = 0
         self.input_value = 0
         self.activation_value = 0
 
@@ -95,13 +92,7 @@ class Synapse:
         self.weight = random.uniform(-4.0, 4.0)
 
     def stimulate(self):
-        #input_value = self.input.get_value() * self.weight
-        self.output.input_unweighted += self.input.get_value()
-        self.output.input_value += self.input.get_value() * self.weight
-
-        # cutoff = random.random()
-        # if input_value > cutoff:
-        #     self.output.call_output_function()
+        self.output.input_value += self.input.input_value * self.weight
 
 class Brain:
 
@@ -128,6 +119,9 @@ class Brain:
             output.activation_value = 0
 
     def stimulate_synapses(self):
+        for input in self.inputs:
+            input: NeuronInput
+            input.calculate_input_value()
         for synapse in self.synapses:
             synapse: Synapse
             synapse.stimulate()
@@ -139,6 +133,7 @@ class Brain:
 
     def call_output_activations(self):
         for output in self.outputs:
+            output: NeuronOutput
             fired = output.activation()
             if fired == True:
                 break
@@ -213,4 +208,6 @@ class Brain:
         return -1
     
     def normalize_value(value, min, max):
+        if max - min == 0:
+            return 0
         return (value - min) / (max - min) * 2 - 1

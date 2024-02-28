@@ -109,6 +109,8 @@ class Creature:
             for y in range(max_vision_up, max_vision_right):
                 if self.grid.get_block(x, y) != self.block and self.grid.get_block(x, y).is_occupied():
                     count += 1
+
+        #count = random.randint(0, 25)
         return count
     
     def generate_creatures(grid, amount, num_synapses=5):

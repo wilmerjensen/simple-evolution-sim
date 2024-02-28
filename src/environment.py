@@ -90,7 +90,8 @@ class Block:
             self.creature.draw()
             return
         
-        border_color = self.grid.color_lines
+        #border_color = self.grid.color_lines
+        border_color = None
 
         if self is self.grid.window.selected_block:
             border_color = (200, 0, 0)
@@ -104,4 +105,5 @@ class Block:
                 
                 #pygame.draw.rect(self.grid.window.display, self.grid.color_lines, self.rect, 1)
 
-        pygame.draw.rect(self.grid.window.display, border_color, self.rect, 1)
+        if border_color != None:
+            pygame.draw.rect(self.grid.window.display, border_color, self.rect, 1)

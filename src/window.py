@@ -38,6 +38,7 @@ class Window:
 
         self.display = display
         self.paused = False
+        self.current_fps = 0
 
         return
 
@@ -91,11 +92,13 @@ class Window:
     def set_right_panel_text(self):
         for i in range(len(self.texts)):
             self.texts[i] = ""
+
+        self.texts[0] = f"FPS: {self.current_fps}"
+
         if self.selected_block == None:
             return
 
-        self.texts[0] = f"Block: [{self.selected_block.pos_x}, {self.selected_block.pos_y}]"
-        self.texts[1] = ""
+        self.texts[1] = f"Block: [{self.selected_block.pos_x}, {self.selected_block.pos_y}]"
 
         if self.selected_creature != None:
             self.texts[2] = "CREATURE BRAIN:"
@@ -103,7 +106,7 @@ class Window:
                 synapse = self.selected_creature.brain.synapses[i]
                 self.texts[i + i + 3] = f"{synapse.input.type.name} -> {synapse.output.type.name} (w: {round(synapse.weight, 4)})"
                 #self.texts[i + i + 4] = f"input: {round(synapse.output.input_value, 4)} | activation: {round(synapse.output.activation_value, 4)}"
-                self.texts[i + i + 4] = f"input raw: {round(synapse.output.input_unweighted, 4)} | input weighted: {round(synapse.output.input_value, 4)} | activation: {round(max(synapse.output.activation_value, 0) * 100, 4)} %"
+                self.texts[i + i + 4] = f"input raw: {round(synapse.input.input_value, 4)} | input weighted: {round(synapse.output.input_value, 4)} | activation: {round(max(synapse.output.activation_value, 0) * 100, 4)} %"
 
         return
 

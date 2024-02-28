@@ -10,9 +10,9 @@ GRID_SIZE_Y = 100
 BLOCK_SIZE = 12
 
 POPULATION = 500
-SYNAPSES = 4
+SYNAPSES = 8
 
-TICKS_PER_SECOND = 60
+TICKS_PER_SECOND = 0
 TICKS_PER_GENERATION = 0
 GENERATION_TICK_COUNT = 0
 GENERATION_COUNT = 0
@@ -52,12 +52,15 @@ def main():
 
         if game_window.paused == False:
             for c in creature_list:
+                c: creatures.Creature
                 c.action()
+                #c.move_random()
                 
         game_window.draw()
 
         pygame.display.update()
         clock.tick(TICKS_PER_SECOND)
+        game_window.current_fps = int(clock.get_fps())
 
         generation_tick_count += 1
         if TICKS_PER_GENERATION > 0 and generation_tick_count == TICKS_PER_GENERATION:

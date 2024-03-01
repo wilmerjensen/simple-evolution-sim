@@ -107,10 +107,6 @@ class Creature:
     
     def get_population_within_vision(self):
         count = 0
-        # max_vision_left = max(self.get_position_x() - self.vision_range, 0)
-        # max_vision_right = min(self.get_position_x() + self.vision_range, self.grid.size_x - 1)
-        # max_vision_up = max(self.get_position_y() - self.vision_range, 0)
-        # max_vision_down = min(self.get_position_y() + self.vision_range, self.grid.size_y - 1)
 
         max_vision_left = max(self.block.pos_x - self.vision_range, 0)
         max_vision_right = min(self.block.pos_x + self.vision_range, self.grid.size_x - 1)
@@ -119,7 +115,6 @@ class Creature:
 
         for x in range(max_vision_left, max_vision_right + 1):
             for y in range(max_vision_up, max_vision_down + 1):
-                #if self.grid.get_block(x, y).is_occupied():
                 if self.grid.blocks[x][y].creature != None:
                     count += 1
 
@@ -127,15 +122,19 @@ class Creature:
         count -= 1 
         return count
     
-    def generate_creatures(grid, amount, num_synapses=5):
-        creatures = []
-        for i in range(amount):
-            block = grid.get_random_block()
-            if block != None:
-                creatures.append(Creature(block, num_synapses))
-        return creatures
-    
     def set_random_color(self):
         self.color = (random.randint(25, 225), random.randint(25, 225), random.randint(25, 225))
 
+
+def generate_creatures(grid, amount, num_synapses=5):
+    creatures = []
+    for i in range(amount):
+        block = grid.get_random_block()
+        if block != None:
+            creatures.append(Creature(block, num_synapses))
+    return creatures
     
+def draw_creatures(creature_list):
+    for c in creature_list:
+        c: Creature
+        c.draw()

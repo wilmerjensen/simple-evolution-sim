@@ -44,6 +44,8 @@ class Window:
 
     def draw(self):
         self.grid.draw_grid()
+        if self.selected_block != None:
+            self.selected_block.draw((200, 0, 0))
         self.draw_right_panel()
         return
 
@@ -125,7 +127,3 @@ class Window:
             self.texts[len(self.texts) - 1] = f"Creatures in vision: {self.selected_creature.get_population_within_vision()}"
 
         return
-
-        # self.text = self.font.render('Test', True, black, white)
-        # game_window.display.blit(text, textrect)
-        # pygame.draw.rect(game_window.display, white, textrect, 1) 

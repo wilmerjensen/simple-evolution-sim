@@ -5,11 +5,11 @@ import window
 import environment
 import creatures
 
-GRID_SIZE_X = 50
-GRID_SIZE_Y = 50
+GRID_SIZE_X = 100
+GRID_SIZE_Y = 100
 BLOCK_SIZE = 12
 
-POPULATION = 100
+POPULATION = 500
 SYNAPSES = 8
 
 TICKS_PER_SECOND = 0
@@ -33,9 +33,9 @@ def main():
     clock = pygame.time.Clock()
 
     game_window.grid = environment.Grid(game_window, game_window.grid_size_x, game_window.grid_size_x, game_window.block_size)
-    #game_window.grid.add_kill_zone((0,0), ((GRID_SIZE_X * BLOCK_SIZE) / 10, GRID_SIZE_Y * BLOCK_SIZE))
+    game_window.grid.add_kill_zone((0,0), ((GRID_SIZE_X * BLOCK_SIZE) / 10, GRID_SIZE_Y * BLOCK_SIZE))
 
-    creature_list = creatures.Creature.generate_creatures(game_window.grid, POPULATION, SYNAPSES)
+    creature_list = creatures.generate_creatures(game_window.grid, POPULATION, SYNAPSES)
 
     generation_tick_count = 0
     generation_count = 0
@@ -49,9 +49,10 @@ def main():
             for c in creature_list:
                 c: creatures.Creature
                 c.action()
-                #c.move_random()
                 
         game_window.draw()
+
+        creatures.draw_creatures(creature_list)
 
         pygame.display.update()
         clock.tick(TICKS_PER_SECOND)
@@ -77,7 +78,6 @@ def event_handler(event, game_window):
         game_window.on_click(event.pos)
     if event.type == pygame.KEYDOWN:
         game_window.on_key_press(event.key)
-    
 
 def kill_creatures_in_kill_zones(grid: environment.Grid, creature_list: list):
     for c in creature_list:

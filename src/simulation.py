@@ -10,7 +10,7 @@ class SimulationState:
     def __init__(self) -> None:
 
         self.window = window.Window()
-        self.creatures = creatures.generate_creatures(self.window.grid, config.POPULATION, config.SYNAPSES)
+        self.creatures = creatures.generate_creatures(self.window.grid, config.POPULATION)
 
         self.num_generations = config.NUMBER_OF_GENERATIONS
         self.steps_per_generation = config.STEPS_PER_GENERATION

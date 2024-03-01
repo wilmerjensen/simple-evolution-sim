@@ -5,19 +5,25 @@ import config
 
 class Creature:
 
-    def __init__(self, block, num_synapses):
+    def __init__(self, grid, block = None, brain = None):
 
         from environment import Grid
         from environment import Block
-        import brain
+        from brain import Brain
 
-        self.block: Block = block
-        self.grid: Grid = self.block.grid
+        self.grid: Grid = grid
         self.vision_range = 5
         self.set_random_color()
 
-        self.num_synapses = num_synapses
-        self.brain = brain.Brain(self, self.num_synapses)
+        if brain != None:
+            self.brain = brain
+        else:
+            self.brain = Brain(self)
+
+        if block != None:
+            self.block: Block = block
+        else:
+            self.block = self.grid.get_random_block()
 
         self.block.add_creature(self)
 
@@ -31,8 +37,12 @@ class Creature:
     def action(self):
         self.brain.action()
 
-    def reproduce(self, mutate: bool):
+    def create_offspring(self):
         new_brain = copy.deepcopy(self.brain)
+        if random.random() >= config.MUTATION_RATE:
+            new_brain.remove_random_synapse()
+            new_brain.add_synapse()
+        return Creature(self.grid, brain = new_brain)
 
     def move_random(self):
         self.move(random.choice(["right", "left", "up", "down"]))
@@ -106,12 +116,12 @@ class Creature:
         self.color = (random.randint(25, 225), random.randint(25, 225), random.randint(25, 225))
 
 
-def generate_creatures(grid, amount, num_synapses):
+def generate_creatures(grid, amount):
     creatures = []
     for i in range(amount):
         block = grid.get_random_block()
         if block != None:
-            creatures.append(Creature(block, num_synapses))
+            creatures.append(Creature(grid))
     return creatures
     
 def trigger_creature_actions(creature_list):

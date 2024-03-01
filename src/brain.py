@@ -1,5 +1,7 @@
 import random
 import math
+import config 
+
 from enum import Enum
 
 class NeuronInputType(Enum):
@@ -97,9 +99,9 @@ class Brain:
 
     from creatures import Creature
 
-    def __init__(self, creature: Creature, num_synapses):
+    def __init__(self, creature: Creature):
         self.creature = creature
-        self.num_synapses = num_synapses
+        self.num_synapses = config.NUMBER_OF_SYNAPSES
         #self.inputs = []
         #self.outputs = []
         self.inputs = [NeuronInput(self, type) for type in NeuronInputType]

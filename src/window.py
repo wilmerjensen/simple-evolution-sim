@@ -1,21 +1,22 @@
 import pygame
+import config
 
 class Window:
 
-    import environment
+    def __init__(self) -> None:
+        from environment import Grid, Block
 
-    def __init__(self, title = None, display: pygame.Surface = None, grid_size = (64, 64), block_size = 16) -> None:
-        # from environment import Grid
-        import environment
-        self.title = title
+        self.title = config.WINDOW_TITLE
 
-        self.grid_size = grid_size
-        self.grid_size_x = grid_size[0]
-        self.grid_size_y = grid_size[1]
-        self.block_size = block_size
+        self.grid_size = (config.GRID_SIZE_X, config.GRID_SIZE_Y)
+        self.grid_size_x = config.GRID_SIZE_X
+        self.grid_size_y = config.GRID_SIZE_Y
+        self.block_size = config.BLOCK_SIZE
 
         self.grid_width = self.grid_size_x * self.block_size
         self.grid_height = self.grid_size_y * self.block_size
+        
+        self.grid: Grid = Grid(self, self.grid_size_x, self.grid_size_x, self.block_size)
 
         self.right_panel_size = (self.grid_width) * 0.65
         self.right_panel_lines = 40
@@ -32,11 +33,10 @@ class Window:
             self.texts.append("")
             self.text_rects.append(pygame.Rect(self.grid_width, (self.height / self.right_panel_lines) * i, self.right_panel_size, self.height / self.right_panel_lines))
 
-        self.grid: environment.Grid = None
-        self.selected_block: environment.Block = None
+        self.selected_block: Block = None
         self.selected_creature = None
 
-        self.display = display
+        self.create_display()
         self.paused = False
         self.current_fps = 0
 
@@ -98,7 +98,6 @@ class Window:
     def create_display(self):
         self.display = pygame.display.set_mode(self.size)
         pygame.display.set_caption(self.title)
-        return
 
     def set_title(self, title):
         self.title = title

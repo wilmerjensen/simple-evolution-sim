@@ -126,7 +126,7 @@ class Creature:
         self.color = (random.randint(25, 225), random.randint(25, 225), random.randint(25, 225))
 
 
-def generate_creatures(grid, amount, num_synapses=5):
+def generate_creatures(grid, amount, num_synapses):
     creatures = []
     for i in range(amount):
         block = grid.get_random_block()
@@ -134,6 +134,11 @@ def generate_creatures(grid, amount, num_synapses=5):
             creatures.append(Creature(block, num_synapses))
     return creatures
     
+def trigger_creature_actions(creature_list):
+    for c in creature_list:
+        c: Creature
+        c.action()
+
 def draw_creatures(creature_list):
     for c in creature_list:
         c: Creature

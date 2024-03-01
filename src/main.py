@@ -18,7 +18,7 @@ def main():
         for event in pygame.event.get():
             event_handler(event, simulation_state)
 
-        simulation_state.step()
+        simulation_state.update()
         pygame.display.update()
 
         clock.tick(config.MAX_FPS)

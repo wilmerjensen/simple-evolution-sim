@@ -20,16 +20,21 @@ class SimulationState:
         self.generation_count = 0
         self.step_count = 0
 
-    def step(self):
+    def update(self):
         if self.paused == False:
-            self.step_count += 1
-            creatures.trigger_creature_actions(self.creatures)
+            self.step()
 
         self.window.draw()
         creatures.draw_creatures(self.creatures)
 
         if self.step_count == self.steps_per_generation:
             self.new_generation()
+
+    def step(self):
+        self.step_count += 1
+        creatures.trigger_creature_actions(self.creatures)
+
+        
 
 
     def new_generation(self):

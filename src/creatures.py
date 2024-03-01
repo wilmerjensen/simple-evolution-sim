@@ -1,22 +1,6 @@
 import pygame
 import random
 
-# class CreatureColors:
-
-#     colors = {
-#         "red": (255, 0, 0),
-#         "green": (0, 255, 0),
-#         "blue": (0, 0, 255),
-#         "purple": (200, 0, 200),
-#         "yellow": (150, 200, 0)
-#     }
-
-#     def get_color_rgb(color):
-#         return CreatureColors.colors[color]
-    
-#     def get_random_color():
-#         return random.choice(list(CreatureColors.colors.keys))
-
 class Creature:
 
     def __init__(self, block, num_synapses = 5):
@@ -44,15 +28,6 @@ class Creature:
 
     def action(self):
         self.brain.action()
-
-    # def move_random(self):
-    #     move_prefs = self.get_random_move_prefs()
-    #     for m in move_prefs:
-    #         if self.move_is_possible(m):
-    #             self.block.remove_creature()
-    #             self.block = self.block.get_adjacent_block(m)
-    #             self.block.add_creature(self)
-    #             break
         
     def move_random(self):
         self.move(random.choice(["right", "left", "up", "down"]))

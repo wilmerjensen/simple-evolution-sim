@@ -100,14 +100,18 @@ class Brain:
     def __init__(self, creature: Creature, num_synapses):
         self.creature = creature
         self.num_synapses = num_synapses
-        self.inputs = []
-        self.outputs = []
-        self.synapses = []
+        #self.inputs = []
+        #self.outputs = []
+        self.inputs = [NeuronInput(self, type) for type in NeuronInputType]
+        self.outputs = [NeuronOutput(self, type) for type in NeuronOutputType]
+
+        self.synapses: list[Synapse] = []
 
         self.generate()
 
     def action(self):
         self.reset_output_neurons()
+        self.calculate_inputs()
         self.stimulate_synapses()
         self.call_output_activations()
 
@@ -118,17 +122,24 @@ class Brain:
             output.activation_value = 0
 
     def stimulate_synapses(self):
-        for input in self.inputs:
-            input: NeuronInput
-            input.calculate_input_value()
         for synapse in self.synapses:
-            synapse: Synapse
             synapse.stimulate()
         for output in self.outputs:
-            output: NeuronOutput
             output.calculate_activation_value()
+
         self.synapses = sorted(self.synapses, key=lambda x: x.output.input_value, reverse=True)
         self.outputs = sorted(self.outputs, key=lambda x: x.input_value, reverse=True)
+
+    def calculate_inputs(self):
+        for input in self.inputs:
+            if self.input_has_synapse(input):
+                input.calculate_input_value()
+
+    def input_has_synapse(self, input):
+        for synapse in self.synapses:
+            if input.type == synapse.input.type:
+                return True
+        return False
 
     def call_output_activations(self):
         for output in self.outputs:
@@ -166,47 +177,14 @@ class Brain:
         return available_outputs
 
     def add_synapse(self):
-        available_inputs = list(NeuronInputType)
-        available_outputs = []
-
-        while len(available_inputs) > 0:
-            input_type = random.choice(available_inputs)
-            available_outputs = self.get_available_output_types(input_type)
-            if len(available_outputs) == 0:
-                available_inputs.remove(input_type)
-            else:
-                break
-
-        output_type = random.choice(available_outputs)
-
-        if self.find_input_type(input_type) >= 0:
-            input = self.inputs[self.find_input_type(input_type)]
-        else:
-            input = NeuronInput(self, input_type)
-            self.inputs.append(input)
-
-        if self.find_output_type(output_type) >= 0:
-            output = self.outputs[self.find_output_type(output_type)]
-        else:
-            output = NeuronOutput(self, output_type)
-            self.outputs.append(output)
-
-        synapse = Synapse(self, input, output)
+        synapse = Synapse(self, random.choice(self.inputs), random.choice(self.outputs))
         self.synapses.append(synapse)
 
-    def find_input_type(self, type: NeuronInputType):
-        for i, inputs in enumerate(self.inputs):
-            if inputs.type is type:
-                return i
-        return -1
-
-    def find_output_type(self, type: NeuronOutputType):
-        for i, output in enumerate(self.outputs):
-            if output.type is type:
-                return i
-        return -1
+    def remove_random_synapse(self):
+        self.synapses.remove(random.choice(self.synapses))
     
     def normalize_value(value, min, max):
         if max - min == 0:
             return 0
         return (value - min) / (max - min) * 2 - 1
+    

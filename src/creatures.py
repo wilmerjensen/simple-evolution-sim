@@ -1,9 +1,11 @@
 import pygame
 import random
+import copy
+import config
 
 class Creature:
 
-    def __init__(self, block, num_synapses = 5):
+    def __init__(self, block, num_synapses):
 
         from environment import Grid
         from environment import Block
@@ -28,7 +30,10 @@ class Creature:
 
     def action(self):
         self.brain.action()
-        
+
+    def reproduce(self, mutate: bool):
+        new_brain = copy.deepcopy(self.brain)
+
     def move_random(self):
         self.move(random.choice(["right", "left", "up", "down"]))
 

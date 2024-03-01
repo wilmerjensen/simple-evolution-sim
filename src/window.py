@@ -15,7 +15,7 @@ class Window:
 
         self.grid_width = self.grid_size_x * self.block_size
         self.grid_height = self.grid_size_y * self.block_size
-        
+
         self.grid: Grid = Grid(self, self.grid_size_x, self.grid_size_x, self.block_size)
 
         self.right_panel_size = (self.grid_width) * 0.65
@@ -57,14 +57,6 @@ class Window:
             pygame.draw.rect(self.display, (175, 175, 175), rect, 1)
         return
 
-    def on_click(self, pos):
-        for x in range(self.grid_size_x):
-            for y in range(self.grid_size_y):
-                block = self.grid.get_block(x, y)
-                if block.rect.collidepoint(pos):
-                    self.select_block(block)
-        return
-
     def select_block(self, block):
         self.selected_block = block
         if block.creature != None:
@@ -72,28 +64,6 @@ class Window:
         else:
             self.selected_creature = None
         self.set_right_panel_text()
-       
-    
-    def on_key_press(self, key):
-        if key == pygame.K_SPACE:
-            self.toggle_pause()
-        if key == pygame.K_RIGHT:
-            if self.selected_block != None and self.selected_block.pos_x < self.grid_size_x - 1:
-                self.select_block(self.selected_block.get_adjacent_block("right"))
-        if key == pygame.K_LEFT:
-            if self.selected_block != None and self.selected_block.pos_x > 0:
-                self.select_block(self.selected_block.get_adjacent_block("left"))
-        if key == pygame.K_UP:
-            if self.selected_block != None and self.selected_block.pos_y > 0:
-                self.select_block(self.selected_block.get_adjacent_block("up"))
-        if key == pygame.K_DOWN:
-            if self.selected_block != None and self.selected_block.pos_y < self.grid_size_y - 1:
-                self.select_block(self.selected_block.get_adjacent_block("down"))
-        return
-
-    def toggle_pause(self):
-        self.paused = not self.paused
-        return
 
     def create_display(self):
         self.display = pygame.display.set_mode(self.size)

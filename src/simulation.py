@@ -4,7 +4,6 @@ import creatures
 import window
 
 from creatures import Creature
-from environment import Grid
 
 class SimulationState:
 
@@ -71,7 +70,7 @@ class SimulationState:
         return
     
     def kill_creatures_in_kill_zones(self):
-        for c in self.creatures:
+        for c in self.creatures[:]:
             c: Creature
             for kz in self.window.grid.kill_zones:
                 if c.block.rect.colliderect(kz):

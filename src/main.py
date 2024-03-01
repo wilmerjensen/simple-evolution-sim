@@ -11,7 +11,7 @@ def main():
     running = True
     
     simulation_state = SimulationState()
-    simulation_state.window.grid.add_kill_zone((0,0), ((config.GRID_SIZE_X * config.BLOCK_SIZE) / 10, config.GRID_SIZE_Y * config.BLOCK_SIZE))
+    simulation_state.window.grid.add_kill_zone((0,0), ((config.GRID_SIZE_X * config.BLOCK_SIZE) / 2, config.GRID_SIZE_Y * config.BLOCK_SIZE))
 
     while running:
 

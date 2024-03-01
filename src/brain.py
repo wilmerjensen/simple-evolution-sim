@@ -113,6 +113,7 @@ class Brain:
         self.reset_output_neurons()
         self.calculate_inputs()
         self.stimulate_synapses()
+        self.calculate_outputs()
         self.call_output_activations()
 
     def reset_output_neurons(self):
@@ -124,9 +125,7 @@ class Brain:
     def stimulate_synapses(self):
         for synapse in self.synapses:
             synapse.stimulate()
-        for output in self.outputs:
-            output.calculate_activation_value()
-
+            
         self.synapses = sorted(self.synapses, key=lambda x: x.output.input_value, reverse=True)
         self.outputs = sorted(self.outputs, key=lambda x: x.input_value, reverse=True)
 
@@ -134,6 +133,10 @@ class Brain:
         for input in self.inputs:
             if self.input_has_synapse(input):
                 input.calculate_input_value()
+
+    def calculate_outputs(self):
+        for output in self.outputs:
+            output.calculate_activation_value()
 
     def input_has_synapse(self, input):
         for synapse in self.synapses:

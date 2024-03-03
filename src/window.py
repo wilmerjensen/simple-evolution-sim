@@ -6,6 +6,7 @@ class Window:
     def __init__(self, simulation) -> None:
         from environment import Grid, Block
         from simulation import SimulationState
+        from creatures import Creature
 
         self.simulation: SimulationState = simulation
 
@@ -37,7 +38,7 @@ class Window:
             self.text_rects.append(pygame.Rect(self.grid_width, (self.height / self.right_panel_lines) * i, self.right_panel_size, self.height / self.right_panel_lines))
 
         self.selected_block: Block = None
-        self.selected_creature = None
+        self.selected_creature: Creature = None
 
         self.create_display()
         self.current_fps = 0
@@ -91,11 +92,15 @@ class Window:
         self.texts[4] = f"Block: [{self.selected_block.pos_x}, {self.selected_block.pos_y}]"
 
         if self.selected_creature != None:
-            for i in range(self.selected_creature.brain.num_synapses):
-                synapse = self.selected_creature.brain.synapses[i]
+            synapses = sorted(self.selected_creature.brain.synapses, key=lambda x: x.output.input_value, reverse=True)
+            for i, synapse in enumerate(synapses):
                 self.texts[5 + i] = f"{synapse.input.type.name} -> {synapse.output.type.name} (w: {round(synapse.weight, 4)}, a: {round(max(synapse.output.activation_value, 0) * 100)}%)"
-                #self.texts[i + i + 4] = f"input: {round(synapse.output.input_value, 4)} | activation: {round(synapse.output.activation_value, 4)}"
-                #self.texts[i + i + 4] = f"input raw: {round(synapse.input.input_value, 4)} | input weighted: {round(synapse.output.input_value, 4)} | activation: {round(max(synapse.output.activation_value, 0) * 100, 4)} %"
+
+            # for i in range(self.selected_creature.brain.num_synapses):
+            #     synapse = self.selected_creature.brain.synapses[i]
+            #     self.texts[5 + i] = f"{synapse.input.type.name} -> {synapse.output.type.name} (w: {round(synapse.weight, 4)}, a: {round(max(synapse.output.activation_value, 0) * 100)}%)"
+            #     #self.texts[i + i + 4] = f"input: {round(synapse.output.input_value, 4)} | activation: {round(synapse.output.activation_value, 4)}"
+            #     #self.texts[i + i + 4] = f"input raw: {round(synapse.input.input_value, 4)} | input weighted: {round(synapse.output.input_value, 4)} | activation: {round(max(synapse.output.activation_value, 0) * 100, 4)} %"
 
             self.texts[len(self.texts) - 1] = f"Creatures in vision: {self.selected_creature.get_population_within_vision()}"
 

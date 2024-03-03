@@ -129,31 +129,40 @@ class Brain:
             output.input_value = 0
             output.activation_value = 0
 
-    def stimulate_synapses(self):
-        for synapse in self.synapses:
-            synapse.stimulate()
-        self.synapses = sorted(self.synapses, key=lambda x: x.output.input_value, reverse=True)
-
     def calculate_inputs(self):
         for input in self.inputs:
             if self.input_has_synapse(input):
                 input.calculate_input_value(self.creature)
 
+    def stimulate_synapses(self):
+        for synapse in self.synapses:
+            synapse.stimulate()
+        self.outputs = sorted(self.outputs, key=lambda x: x.input_value, reverse=True)
+
     def calculate_outputs(self):
         for output in self.outputs:
-            output.calculate_activation_value()
+            if self.output_has_synapse(output):
+                output.calculate_activation_value()
 
-    def input_has_synapse(self, input):
+    def call_output_activations(self):
+        for output in self.outputs:
+            if output.activation_value <= 0:
+                break
+            fired = output.activation(self.creature)
+            if fired == True:
+                break 
+
+    def input_has_synapse(self, input: NeuronInput):
         for synapse in self.synapses:
             if input.type == synapse.input.type:
                 return True
         return False
-
-    def call_output_activations(self):
+    
+    def output_has_synapse(self, output: NeuronOutput):
         for synapse in self.synapses:
-            fired = synapse.output.activation(self.creature)
-            if fired == True:
-                break
+            if output.type == synapse.output.type:
+                return True
+        return False 
 
     def generate(self):
         self.synapses: list[Synapse] = []

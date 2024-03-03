@@ -98,13 +98,12 @@ class SimulationState:
             del c
 
     def kill_creatures_in_kill_zones(self):
-        for c in self.creatures[:]:
-            c: Creature
-            for kz in self.window.grid.kill_zones:
-                if c.block.rect.colliderect(kz):
-                    c.block.remove_creature()
-                    self.creatures.remove(c)
-                    del c
+        for kz in self.window.grid.kill_zones:
+            for creature in self.creatures[:]:
+                if creature.block.rect.colliderect(kz):
+                    creature.block.remove_creature()
+                    self.creatures.remove(creature)
+                    del creature
 
         self.window.draw()
         creatures.draw_creatures(self.creatures)

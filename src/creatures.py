@@ -50,37 +50,59 @@ class Creature:
         self.move(random.choice(["right", "left", "up", "down"]))
 
     def move(self, direction):
-        if self.move_is_possible(direction):
-            new_block = self.block.get_adjacent_block(direction)
-            if self == self.grid.window.selected_creature:
-                self.grid.window.selected_block = new_block
-                print(f"move from: {self.block.get_position()}")
-                
-            self.block.remove_creature()
-            self.block = new_block
-            self.block.add_creature(self)
-            if self == self.block.grid.window.selected_creature:
-                print(f"move to: {self.block.get_position()}")
+        if self.move_is_possible(direction) == False:
+            return
+        
+        new_block = self.block.get_adjacent_block(direction)
+        if self == self.grid.window.selected_creature:
+            self.grid.window.selected_block = new_block
+            
+        self.block.remove_creature()
+        self.block = new_block
+        self.block.add_creature(self)
 
     def get_random_move_prefs(self):
         move_prefs = ["right", "left", "up", "down"]
         random.shuffle(move_prefs)
         return move_prefs
 
+    # def move_is_possible(self, move):
+    #     grid = self.block.grid
+    #     pos_x, pos_y = self.get_position()
+    #     if move == "right":
+    #         if pos_x == self.grid.size_x - 1 or self.block.get_adjacent_block(move).is_occupied():
+    #             return False
+    #     elif move == "left":
+    #         if pos_x == 0 or self.block.get_adjacent_block(move).is_occupied():
+    #             return False
+    #     elif move == "down":
+    #         if pos_y == self.grid.size_y - 1 or self.block.get_adjacent_block(move).is_occupied():
+    #             return False
+    #     elif move == "up":
+    #         if pos_y == 0 or self.block.get_adjacent_block(move).is_occupied():
+    #             return False
+    #     return True
+    
     def move_is_possible(self, move):
-        grid = self.block.grid
-        pos_x, pos_y = self.get_position()
         if move == "right":
-            if pos_x == self.grid.size_x - 1 or self.block.get_adjacent_block(move).is_occupied():
+            if self.block.pos_x == self.grid.size_x - 1:
+                return False
+            if self.grid.blocks[self.block.pos_x + 1][self.block.pos_y].creature != None:
                 return False
         elif move == "left":
-            if pos_x == 0 or self.block.get_adjacent_block(move).is_occupied():
+            if self.block.pos_x == 0:
                 return False
-        elif move == "down":
-            if pos_y == self.grid.size_y - 1 or self.block.get_adjacent_block(move).is_occupied():
+            if self.grid.blocks[self.block.pos_x - 1][self.block.pos_y].creature != None:
+                return False
+        if move == "down":
+            if self.block.pos_y == self.grid.size_y - 1:
+                return False
+            if self.grid.blocks[self.block.pos_x][self.block.pos_y + 1].creature != None:
                 return False
         elif move == "up":
-            if pos_y == 0 or self.block.get_adjacent_block(move).is_occupied():
+            if self.block.pos_y == 0:
+                return False
+            if self.grid.blocks[self.block.pos_x][self.block.pos_y - 1].creature != None:
                 return False
         return True
 

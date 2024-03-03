@@ -15,7 +15,7 @@ class Grid:
         self.kill_zones = []
 
         # --> generate block instances ans store them in 2D list
-        self.blocks = self.__create_blocks__()
+        self.blocks: list[Block] = self.__create_blocks__()
         
     def __create_blocks__(self):
         blocks = []
@@ -60,6 +60,7 @@ class Block:
         self.size = size
         self.rect = pygame.Rect(self.pos_x * self.size, self.pos_y * self.size, self.size, self.size)
         self.creature: Creature = creature
+        self.blocked = False
 
     def add_creature(self, creature):
         self.creature = creature

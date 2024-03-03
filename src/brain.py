@@ -1,6 +1,7 @@
 import random
 import math
-import config 
+import config
+import utils
 
 from enum import Enum
 
@@ -29,15 +30,15 @@ class NeuronInput:
         #self.creature = brain.creature
         self.type = type
         self.input_value = 0
-        self.input_calculated = False
 
     def calculate_input_value(self, creature: Creature):
+        #self.input_value = random.uniform(-1.0, 1.0)
         if self.type is NeuronInputType.LocationX:
-            self.input_value = Brain.normalize_value(creature.block.pos_x, 0, creature.grid.size_x)
+            self.input_value = utils.normalize_value(creature.block.pos_x, 0, creature.grid.size_x)
         elif self.type is NeuronInputType.LocationY:
-            self.input_value = Brain.normalize_value(creature.block.pos_y, 0, creature.grid.size_y)
+            self.input_value = utils.normalize_value(creature.block.pos_y, 0, creature.grid.size_y)
         elif self.type is NeuronInputType.PopulationDensityClose:
-            self.input_value = Brain.normalize_value(creature.get_population_within_vision(), 0, (creature.vision_range * creature.vision_range) - 1)
+            self.input_value = utils.normalize_value(creature.get_population_within_vision(), 0, (creature.vision_range * creature.vision_range) - 1)
         elif self.type is NeuronInputType.Random:
             self.input_value = random.uniform(-1.0, 1.0)
         elif self.type is NeuronInputType.BlockedRight:
@@ -48,8 +49,6 @@ class NeuronInput:
             self.input_value = -1 if creature.move_is_possible("up") else 1
         elif self.type is NeuronInputType.BlockedDown:
             self.input_value = -1 if creature.move_is_possible("down") else 1
-
-        self.input_calculated = True
 
 class NeuronOutput:
 
@@ -133,9 +132,7 @@ class Brain:
     def stimulate_synapses(self):
         for synapse in self.synapses:
             synapse.stimulate()
-            
         self.synapses = sorted(self.synapses, key=lambda x: x.output.input_value, reverse=True)
-        self.outputs = sorted(self.outputs, key=lambda x: x.input_value, reverse=True)
 
     def calculate_inputs(self):
         for input in self.inputs:
@@ -153,9 +150,8 @@ class Brain:
         return False
 
     def call_output_activations(self):
-        for output in self.outputs:
-            output: NeuronOutput
-            fired = output.activation(self.creature)
+        for synapse in self.synapses:
+            fired = synapse.output.activation(self.creature)
             if fired == True:
                 break
 
@@ -176,17 +172,6 @@ class Brain:
             if synapse_is_match == True:
                 synapse_list.append(s)
         return synapse_list
-
-    def get_available_output_types(self, input_type):
-        synapses_with_same_input = self.get_synapses(input_type)
-
-        taken_output_types = []
-        for s in synapses_with_same_input:
-            s: Synapse
-            taken_output_types.append(s.output.type)
-
-        available_outputs = list(filter(lambda x: x not in taken_output_types, list(NeuronOutputType)))
-        return available_outputs
 
     def add_synapse(self, input_type = None, output_type = None):
         if input_type != None:
@@ -216,8 +201,5 @@ class Brain:
     def remove_random_synapse(self):
         self.synapses.remove(random.choice(self.synapses))
     
-    def normalize_value(value, min, max):
-        if max - min == 0:
-            return 0
-        return (value - min) / (max - min) * 2 - 1
-    
+
+

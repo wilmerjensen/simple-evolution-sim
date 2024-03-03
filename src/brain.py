@@ -54,7 +54,7 @@ class NeuronOutput:
     from creatures import Creature
 
     def __init__(self, brain: "Brain", type: NeuronInputType) -> None:
-        self.creature = brain.creature
+        self.brain = brain
         self.type = type
         self.input_value = 0
         self.activation_value = 0
@@ -71,15 +71,15 @@ class NeuronOutput:
 
     def call_output_function(self):
         if self.type is NeuronOutputType.MoveRight:
-            self.creature.move("right")
+            self.brain.creature.move("right")
         elif self.type is NeuronOutputType.MoveLeft:
-            self.creature.move("left")
+            self.brain.creature.move("left")
         elif self.type is NeuronOutputType.MoveUp:
-            self.creature.move("up")
+            self.brain.creature.move("up")
         elif self.type is NeuronOutputType.MoveDown:
-            self.creature.move("down")
+            self.brain.creature.move("down")
         elif self.type is NeuronOutputType.MoveRandom:
-            self.creature.move_random()
+            self.brain.creature.move_random()
         return
 
 class Synapse:
@@ -99,7 +99,7 @@ class Brain:
 
     from creatures import Creature
 
-    def __init__(self, creature: Creature):
+    def __init__(self, creature: Creature, synapses: list[Synapse] = None):
         self.creature = creature
         self.num_synapses = config.NUMBER_OF_SYNAPSES
         #self.inputs = []
@@ -107,9 +107,16 @@ class Brain:
         self.inputs = [NeuronInput(self, type) for type in NeuronInputType]
         self.outputs = [NeuronOutput(self, type) for type in NeuronOutputType]
 
-        self.synapses: list[Synapse] = []
-
         self.generate()
+
+        # self.synapses = synapses
+        # if synapses == None:
+        #     self.generate()
+
+    def create_copy(self):
+        brain_copy = Brain(self.creature, self.synapses)
+        brain_copy.creature = None
+        return brain_copy
 
     def action(self):
         self.reset_output_neurons()
@@ -154,6 +161,7 @@ class Brain:
                 break
 
     def generate(self):
+        self.synapses: list[Synapse] = []
         for i in range(self.num_synapses):
             self.add_synapse()
 

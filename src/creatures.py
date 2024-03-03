@@ -38,11 +38,13 @@ class Creature:
         self.brain.action()
 
     def create_offspring(self):
-        new_brain = copy.deepcopy(self.brain)
-        if random.random() >= config.MUTATION_RATE:
+        new_brain = self.brain.create_copy()
+        if random.random() <= config.MUTATION_RATE:
             new_brain.remove_random_synapse()
             new_brain.add_synapse()
-        return Creature(self.grid, brain = new_brain)
+        child = Creature(self.grid, brain = new_brain)
+        child.brain.creature = child
+        return child
 
     def move_random(self):
         self.move(random.choice(["right", "left", "up", "down"]))
@@ -52,10 +54,13 @@ class Creature:
             new_block = self.block.get_adjacent_block(direction)
             if self == self.grid.window.selected_creature:
                 self.grid.window.selected_block = new_block
-
+                print(f"move from: {self.block.get_position()}")
+                
             self.block.remove_creature()
             self.block = new_block
             self.block.add_creature(self)
+            if self == self.block.grid.window.selected_creature:
+                print(f"move to: {self.block.get_position()}")
 
     def get_random_move_prefs(self):
         move_prefs = ["right", "left", "up", "down"]
@@ -122,6 +127,15 @@ def generate_creatures(grid, amount):
         block = grid.get_random_block()
         if block != None:
             creatures.append(Creature(grid))
+    return creatures
+
+def generate_population_offspring(grid, amount, population: list[Creature]):
+    creatures = []
+    for i in range(amount):
+        block = grid.get_random_block()
+        if block != None:
+            parent_creature = random.choice(population)
+            creatures.append(parent_creature.create_offspring())
     return creatures
     
 def trigger_creature_actions(creature_list):

@@ -12,7 +12,7 @@ class Creature:
         from brain import Brain
 
         self.grid: Grid = grid
-        self.vision_range = 5
+        self.vision_range = config.VISION_RANGE
         self.set_random_color()
 
         if brain != None:
@@ -28,11 +28,9 @@ class Creature:
         self.block.add_creature(self)
 
     def draw(self):
+        pygame.draw.circle(self.grid.window.display, self.color, self.block.rect.center, self.block.size / 2, 0)
         if self.block is self.grid.window.selected_block:
-            pygame.draw.circle(self.grid.window.display, self.color, self.block.rect.center, self.block.size / 2, 0)
             pygame.draw.rect(self.grid.window.display, (200, 0, 0), self.block.rect, 1)
-        else:
-            pygame.draw.circle(self.grid.window.display, self.color, self.block.rect.center, self.block.size / 2, 0)
 
     def action(self):
         self.brain.action()
@@ -44,6 +42,7 @@ class Creature:
             new_brain.add_synapse()
         child = Creature(self.grid, brain = new_brain)
         child.brain.creature = child
+        child.color = self.color
         return child
 
     def move_random(self):

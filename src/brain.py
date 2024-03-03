@@ -32,7 +32,6 @@ class NeuronInput:
         self.input_value = 0
 
     def calculate_input_value(self, creature: Creature):
-        #self.input_value = random.uniform(-1.0, 1.0)
         if self.type is NeuronInputType.LocationX:
             self.input_value = utils.normalize_value(creature.block.pos_x, 0, creature.grid.size_x)
         elif self.type is NeuronInputType.LocationY:

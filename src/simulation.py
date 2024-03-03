@@ -45,9 +45,9 @@ class SimulationState:
         creatures_survived = len(self.creatures)
         creatures_killed = config.POPULATION - creatures_survived
         self.latest_survival_rate = round((creatures_survived / config.POPULATION) * 100)
-        print(f"Generation {self.generation_count} ended:")
-        print(f"{creatures_killed} died")
-        print(f"{self.latest_survival_rate}% survived")
+        # print(f"Generation {self.generation_count} ended:")
+        # print(f"{creatures_killed} died")
+        # print(f"{self.latest_survival_rate}% survived")
         self.step_count = 0
         if config.PAUSE_ON_NEW_GENERATION:
             self.paused = True

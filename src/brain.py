@@ -90,7 +90,9 @@ class Synapse:
         self.weight = random.uniform(-4.0, 4.0)
 
     def stimulate(self):
-        self.output.input_value += self.input.input_value * self.weight
+        weighted_input = self.input.input_value * self.weight
+        self.output.input_value += weighted_input
+        self.output.activation_value += math.tanh(weighted_input)
 
 class Brain:
 
@@ -117,10 +119,9 @@ class Brain:
         return brain_copy
 
     def action(self):
+        # reset probably not needed? all outputs should be calculated again every frame
         self.reset_output_neurons()
-        self.calculate_inputs()
         self.stimulate_synapses()
-        self.calculate_outputs()
         self.call_output_activations()
 
     def reset_output_neurons(self):
@@ -128,25 +129,40 @@ class Brain:
             output.input_value = 0
             output.activation_value = 0
 
-    def calculate_inputs(self):
-        for input in self.inputs:
-            if self.input_has_synapse(input):
-                input.calculate_input_value(self.creature)
+    # def calculate_inputs(self):
+    #     handled_inputs = []
+    #     for synapse in self.synapses:
+    #         if synapse.input not in handled_inputs:
+    #             synapse.input.calculate_input_value(self.creature)
+    #             handled_inputs.append(synapse.input)
+
+    # def stimulate_synapses(self):
+    #     for synapse in self.synapses:
+    #         synapse.stimulate()
+    #     self.outputs = sorted(self.outputs, key=lambda x: x.input_value, reverse=True)
 
     def stimulate_synapses(self):
+        handled_inputs = []
         for synapse in self.synapses:
+            if synapse.input not in handled_inputs:
+                synapse.input.calculate_input_value(self.creature)
+                #synapse.input.input_value = random.uniform(-1.0, 1.0)
+                handled_inputs.append(synapse.input)
             synapse.stimulate()
-        self.outputs = sorted(self.outputs, key=lambda x: x.input_value, reverse=True)
-
-    def calculate_outputs(self):
-        for output in self.outputs:
-            if self.output_has_synapse(output):
-                output.calculate_activation_value()
+        self.outputs = sorted(self.outputs, key=lambda x: x.activation_value, reverse=True)
+        
+    # def calculate_outputs(self):
+    #     handled_outputs = []
+    #     for synapse in self.synapses:
+    #         if synapse.output not in handled_outputs:
+    #             synapse.output.calculate_activation_value()
+    #             handled_outputs.append(synapse.input)
 
     def call_output_activations(self):
         for output in self.outputs:
             if output.activation_value <= 0:
-                break
+                # outputs are ordered by activation_value, if we get here no other outputs will trigger either
+                break 
             fired = output.activation(self.creature)
             if fired == True:
                 break 

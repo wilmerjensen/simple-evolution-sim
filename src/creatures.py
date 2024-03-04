@@ -65,46 +65,6 @@ class Creature:
         random.shuffle(move_prefs)
         return move_prefs
 
-    # def move_is_possible(self, move):
-    #     grid = self.block.grid
-    #     pos_x, pos_y = self.get_position()
-    #     if move == "right":
-    #         if pos_x == self.grid.size_x - 1 or self.block.get_adjacent_block(move).is_occupied():
-    #             return False
-    #     elif move == "left":
-    #         if pos_x == 0 or self.block.get_adjacent_block(move).is_occupied():
-    #             return False
-    #     elif move == "down":
-    #         if pos_y == self.grid.size_y - 1 or self.block.get_adjacent_block(move).is_occupied():
-    #             return False
-    #     elif move == "up":
-    #         if pos_y == 0 or self.block.get_adjacent_block(move).is_occupied():
-    #             return False
-    #     return True
-    
-    # def move_is_possible(self, move):
-    #     if move == "right":
-    #         if self.block.pos_x == self.grid.size_x - 1:
-    #             return False
-    #         if self.grid.blocks[self.block.pos_x + 1][self.block.pos_y].creature != None:
-    #             return False
-    #     elif move == "left":
-    #         if self.block.pos_x == 0:
-    #             return False
-    #         if self.grid.blocks[self.block.pos_x - 1][self.block.pos_y].creature != None:
-    #             return False
-    #     if move == "down":
-    #         if self.block.pos_y == self.grid.size_y - 1:
-    #             return False
-    #         if self.grid.blocks[self.block.pos_x][self.block.pos_y + 1].creature != None:
-    #             return False
-    #     elif move == "up":
-    #         if self.block.pos_y == 0:
-    #             return False
-    #         if self.grid.blocks[self.block.pos_x][self.block.pos_y - 1].creature != None:
-    #             return False
-    #     return True
-
     def move_is_possible(self, move):
         if move == "right":
             if self.block.pos_x == self.grid.size_x - 1:

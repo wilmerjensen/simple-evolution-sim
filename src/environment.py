@@ -89,5 +89,8 @@ class Block:
             return self.grid.get_block(self.pos_x, self.pos_y - 1)
         return None
 
+    def draw(self, color = (0, 0, 0)):
+        pygame.draw.rect(self.grid.window.display, color, self.rect, 1)
+
     def draw_wall(self, color = (50, 50, 50)):
-        pygame.draw.rect(self.grid.window.display, (50, 50, 50), self.rect, 0)
+        pygame.draw.rect(self.grid.window.display, color, self.rect, 0)

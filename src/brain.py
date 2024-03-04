@@ -80,10 +80,10 @@ class NeuronOutput:
 
 class Synapse:
 
-    def __init__(self, input: NeuronInput, output: NeuronOutput):
+    def __init__(self, input: NeuronInput, output: NeuronOutput, weight = random.uniform(-4.0, 4.0)):
         self.input = input
         self.output = output
-        self.weight = random.uniform(-4.0, 4.0)
+        self.weight = weight
 
     def stimulate(self):
         weighted_input = self.input.input_value * self.weight
@@ -103,7 +103,7 @@ class Brain:
         
         if copy_of != None:
             for copy_synapse in copy_of.synapses:
-                self.add_synapse(copy_synapse.input.type, copy_synapse.output.type)
+                self.add_synapse(copy_synapse.input.type, copy_synapse.output.type, copy_synapse.weight)
         else:
             for i in range(self.num_synapses):
                 self.add_synapse()
@@ -170,7 +170,7 @@ class Brain:
                 synapse_list.append(s)
         return synapse_list
 
-    def add_synapse(self, input_type = None, output_type = None):
+    def add_synapse(self, input_type = None, output_type = None, weight = None):
         if input_type != None:
             input = self.get_neuron_input(input_type)
         else:
@@ -180,7 +180,11 @@ class Brain:
         else:
             output = random.choice(self.outputs)
         
-        synapse = Synapse(input, output)
+        if weight == None:
+            synapse = Synapse(input, output)
+        else:
+            synapse = Synapse(input, output, weight)
+
         self.synapses.append(synapse)
 
     def get_neuron_input(self, input_type):

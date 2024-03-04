@@ -27,7 +27,6 @@ class NeuronInput:
     from creatures import Creature
 
     def __init__(self, type: NeuronInputType) -> None:
-        #self.creature = brain.creature
         self.type = type
         self.input_value = 0
 
@@ -119,7 +118,6 @@ class Brain:
         return brain_copy
 
     def action(self):
-        # reset probably not needed? all outputs should be calculated again every frame
         self.reset_output_neurons()
         self.stimulate_synapses()
         self.call_output_activations()
@@ -129,34 +127,14 @@ class Brain:
             output.input_value = 0
             output.activation_value = 0
 
-    # def calculate_inputs(self):
-    #     handled_inputs = []
-    #     for synapse in self.synapses:
-    #         if synapse.input not in handled_inputs:
-    #             synapse.input.calculate_input_value(self.creature)
-    #             handled_inputs.append(synapse.input)
-
-    # def stimulate_synapses(self):
-    #     for synapse in self.synapses:
-    #         synapse.stimulate()
-    #     self.outputs = sorted(self.outputs, key=lambda x: x.input_value, reverse=True)
-
     def stimulate_synapses(self):
-        handled_inputs = []
+        handled_inputs = set()
         for synapse in self.synapses:
             if synapse.input not in handled_inputs:
                 synapse.input.calculate_input_value(self.creature)
-                #synapse.input.input_value = random.uniform(-1.0, 1.0)
-                handled_inputs.append(synapse.input)
+                handled_inputs.add(synapse.input)
             synapse.stimulate()
         self.outputs = sorted(self.outputs, key=lambda x: x.activation_value, reverse=True)
-        
-    # def calculate_outputs(self):
-    #     handled_outputs = []
-    #     for synapse in self.synapses:
-    #         if synapse.output not in handled_outputs:
-    #             synapse.output.calculate_activation_value()
-    #             handled_outputs.append(synapse.input)
 
     def call_output_activations(self):
         for output in self.outputs:

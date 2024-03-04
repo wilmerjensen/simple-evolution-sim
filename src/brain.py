@@ -80,10 +80,13 @@ class NeuronOutput:
 
 class Synapse:
 
-    def __init__(self, input: NeuronInput, output: NeuronOutput, weight = random.uniform(-4.0, 4.0)):
+    def __init__(self, input: NeuronInput, output: NeuronOutput, weight = None):
         self.input = input
         self.output = output
-        self.weight = weight
+        if weight != None:
+            self.weight = weight
+        else:
+            self.weight = random.uniform(-4.0, 4.0)
 
     def stimulate(self):
         weighted_input = self.input.input_value * self.weight

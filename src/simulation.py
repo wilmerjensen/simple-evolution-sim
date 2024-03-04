@@ -104,8 +104,17 @@ class SimulationState:
         if event.key == pygame.K_DOWN:
             if self.window.selected_block != None and self.window.selected_block.pos_y < self.window.grid_size_y - 1:
                 self.window.select_block(self.window.selected_block.get_adjacent_block("down"))
-        if event.key == pygame.K_c:
-            self.clear_all_walls()
+        if event.key == pygame.K_r:
+            if pygame.key.get_mods() & pygame.KMOD_LSHIFT:
+                self.clear_all_walls()
+            else:
+                self.clear_wall(pygame.mouse.get_pos())
+
+    def clear_wall(self, pos):
+        for x in range(self.window.grid_size_x):
+            for y in range(self.window.grid_size_y):
+                if self.window.grid.blocks[x][y].rect.collidepoint(pos):
+                    self.window.grid.blocks[x][y].is_wall = False
 
     def clear_all_walls(self):
         for x in range(self.window.grid_size_x):

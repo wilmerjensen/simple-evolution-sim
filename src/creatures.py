@@ -14,6 +14,7 @@ class Creature:
 
         self.grid: Grid = grid
         self.vision_range = config.VISION_RANGE
+        self.age = 0
 
         if color != None:
             self.color = color
@@ -40,6 +41,7 @@ class Creature:
 
     def action(self):
         self.brain.action()
+        self.age += 1
 
     def create_offspring(self):
         from utils import get_color_mutation

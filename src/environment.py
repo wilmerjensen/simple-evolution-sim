@@ -47,7 +47,7 @@ class Grid:
             x = random.randint(0, self.size_x - 1)
             y = random.randint(0, self.size_y - 1)
             block = self.blocks[x][y]
-            if block.is_occupied() == False:
+            if block.is_blocked() == False:
                 return block
         return None
     

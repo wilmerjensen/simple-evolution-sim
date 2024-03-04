@@ -56,6 +56,11 @@ class Creature:
         if self == self.grid.window.selected_creature:
             self.grid.window.selected_block = new_block
             
+        if new_block.creature != None or new_block.is_wall == True:
+              p = self.move_is_possible(direction)
+              print(p)
+              print("ERROR")
+
         self.block.remove_creature()
         self.block = new_block
         self.block.add_creature(self)
@@ -69,7 +74,7 @@ class Creature:
         if move == "right":
             if self.block.pos_x == self.grid.size_x - 1:
                 return False
-            return not self.grid.blocks[self.block.pos_x - 1][self.block.pos_y].is_blocked()
+            return not self.grid.blocks[self.block.pos_x + 1][self.block.pos_y].is_blocked()
         elif move == "left":
             if self.block.pos_x == 0:
                 return False

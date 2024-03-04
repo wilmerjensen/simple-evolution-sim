@@ -14,7 +14,7 @@ class Grid:
         self.color_lines = color_lines
         self.kill_zones = []
 
-        # --> generate block instances ans store them in 2D list
+        # --> generate block instances and store them in 2D list
         self.blocks: list[Block] = self.__create_blocks__()
         
     def __create_blocks__(self):
@@ -33,9 +33,10 @@ class Grid:
         self.window.display.fill(self.color_bg)
         for kz in self.kill_zones:
            pygame.draw.rect(self.window.display, (225, 125, 125), kz, 0)
-        # for x in range(self.size_x):
-        #     for y in range(self.size_y):
-        #         self.blocks[x][y].draw()
+        for x in range(self.size_x):
+            for y in range(self.size_y):
+                if self.blocks[x][y].is_wall == True:
+                    self.blocks[x][y].draw_wall()
 
     def get_block(self, x, y) -> "Block":
         return self.blocks[x][y]
@@ -60,7 +61,7 @@ class Block:
         self.size = size
         self.rect = pygame.Rect(self.pos_x * self.size, self.pos_y * self.size, self.size, self.size)
         self.creature: Creature = creature
-        self.blocked = False
+        self.is_wall = False
 
     def add_creature(self, creature):
         self.creature = creature
@@ -70,6 +71,9 @@ class Block:
 
     def is_occupied(self):
         return self.creature != None
+    
+    def is_blocked(self):
+        return self.creature != None or self.is_wall == True
 
     def get_position(self):
         return self.pos_x, self.pos_y
@@ -85,5 +89,5 @@ class Block:
             return self.grid.get_block(self.pos_x, self.pos_y - 1)
         return None
 
-    def draw(self, color = (0, 0, 0)):
-        pygame.draw.rect(self.grid.window.display, color, self.rect, 1)
+    def draw_wall(self, color = (50, 50, 50)):
+        pygame.draw.rect(self.grid.window.display, (50, 50, 50), self.rect, 0)

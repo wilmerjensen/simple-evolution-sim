@@ -31,13 +31,15 @@ def main():
 
     pygame.quit()
 
-def event_handler(event, simulation):
+def event_handler(event, simulation: SimulationState):
     if event.type == pygame.QUIT:
         sys.exit()
     if event.type == pygame.MOUSEBUTTONDOWN:
-        simulation.on_click(event.pos)
+        simulation.on_click(event)
+    if event.type == pygame.MOUSEMOTION:
+        simulation.on_mouse_movement(event)
     if event.type == pygame.KEYDOWN:
-        simulation.on_key_press(event.key)
+        simulation.on_key_press(event)
 
 
 if __name__ == "__main__":

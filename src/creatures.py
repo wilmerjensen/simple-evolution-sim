@@ -82,28 +82,46 @@ class Creature:
     #             return False
     #     return True
     
+    # def move_is_possible(self, move):
+    #     if move == "right":
+    #         if self.block.pos_x == self.grid.size_x - 1:
+    #             return False
+    #         if self.grid.blocks[self.block.pos_x + 1][self.block.pos_y].creature != None:
+    #             return False
+    #     elif move == "left":
+    #         if self.block.pos_x == 0:
+    #             return False
+    #         if self.grid.blocks[self.block.pos_x - 1][self.block.pos_y].creature != None:
+    #             return False
+    #     if move == "down":
+    #         if self.block.pos_y == self.grid.size_y - 1:
+    #             return False
+    #         if self.grid.blocks[self.block.pos_x][self.block.pos_y + 1].creature != None:
+    #             return False
+    #     elif move == "up":
+    #         if self.block.pos_y == 0:
+    #             return False
+    #         if self.grid.blocks[self.block.pos_x][self.block.pos_y - 1].creature != None:
+    #             return False
+    #     return True
+
     def move_is_possible(self, move):
         if move == "right":
             if self.block.pos_x == self.grid.size_x - 1:
                 return False
-            if self.grid.blocks[self.block.pos_x + 1][self.block.pos_y].creature != None:
-                return False
+            return not self.grid.blocks[self.block.pos_x - 1][self.block.pos_y].is_blocked()
         elif move == "left":
             if self.block.pos_x == 0:
                 return False
-            if self.grid.blocks[self.block.pos_x - 1][self.block.pos_y].creature != None:
-                return False
+            return not self.grid.blocks[self.block.pos_x - 1][self.block.pos_y].is_blocked()
         if move == "down":
             if self.block.pos_y == self.grid.size_y - 1:
                 return False
-            if self.grid.blocks[self.block.pos_x][self.block.pos_y + 1].creature != None:
-                return False
+            return not self.grid.blocks[self.block.pos_x][self.block.pos_y + 1].is_blocked()
         elif move == "up":
             if self.block.pos_y == 0:
                 return False
-            if self.grid.blocks[self.block.pos_x][self.block.pos_y - 1].creature != None:
-                return False
-        return True
+            return not self.grid.blocks[self.block.pos_x][self.block.pos_y - 1].is_blocked()
 
     def get_position(self):
         return self.block.pos_x, self.block.pos_y

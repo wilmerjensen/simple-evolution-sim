@@ -61,31 +61,50 @@ class SimulationState:
             self.kill_all_creatures()
             self.creatures = creatures.generate_population_offspring(self.window.grid, config.POPULATION, parents)
 
-    def on_click(self, pos):
+    def on_click(self, event):
+        if event.button == 1:
+            self.on_click_left(event)
+        if event.button == 3:
+            self.on_click_right(event)
+
+    def on_click_left(self, event):
         for x in range(self.window.grid_size_x):
             for y in range(self.window.grid_size_y):
                 block = self.window.grid.get_block(x, y)
-                if block.rect.collidepoint(pos):
+                if block.rect.collidepoint(event.pos):
                     self.window.select_block(block)
-        return
 
-    def on_key_press(self, key):
-        if key == pygame.K_SPACE:
+    def on_click_right(self, event):
+        for x in range(self.window.grid_size_x):
+            for y in range(self.window.grid_size_y):
+                block = self.window.grid.get_block(x, y)
+                if block.rect.collidepoint(event.pos):
+                    block.is_wall = True
+
+    def on_mouse_movement(self, event):
+        if event.buttons[2]:
+            for x in range(self.window.grid_size_x):
+                for y in range(self.window.grid_size_y):
+                    if self.window.grid.blocks[x][y].is_wall == False:
+                        if self.window.grid.blocks[x][y].rect.collidepoint(event.pos):
+                            self.window.grid.blocks[x][y].is_wall = True
+
+    def on_key_press(self, event):
+        if event.key == pygame.K_SPACE:
             self.toggle_pause()
-        if key == pygame.K_RIGHT:
+        if event.key == pygame.K_RIGHT:
             if self.window.selected_block != None and self.window.selected_block.pos_x < self.window.grid_size_x - 1:
                 self.window.select_block(self.window.selected_block.get_adjacent_block("right"))
-        if key == pygame.K_LEFT:
+        if event.key == pygame.K_LEFT:
             if self.window.selected_block != None and self.window.selected_block.pos_x > 0:
                 self.window.select_block(self.window.selected_block.get_adjacent_block("left"))
-        if key == pygame.K_UP:
+        if event.key == pygame.K_UP:
             if self.window.selected_block != None and self.window.selected_block.pos_y > 0:
                 self.window.select_block(self.window.selected_block.get_adjacent_block("up"))
-        if key == pygame.K_DOWN:
+        if event.key == pygame.K_DOWN:
             if self.window.selected_block != None and self.window.selected_block.pos_y < self.window.grid_size_y - 1:
                 self.window.select_block(self.window.selected_block.get_adjacent_block("down"))
-        return
-    
+
     def toggle_pause(self):
         self.paused = not self.paused
         return

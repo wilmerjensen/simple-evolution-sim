@@ -22,7 +22,7 @@ class Window:
 
         self.grid: Grid = Grid(self, self.grid_size_x, self.grid_size_x, self.block_size)
 
-        self.right_panel_size = (self.grid_width) * 0.65
+        self.right_panel_size = (self.grid_width) * 0.5
         self.right_panel_lines = 40
 
         self.width = self.grid_width + self.right_panel_size
@@ -78,23 +78,30 @@ class Window:
         return
     
     def set_right_panel_text(self):
+
+        from math import tanh
+
         for i in range(len(self.texts)):
             self.texts[i] = ""
 
         self.texts[0] = f"FPS: {self.current_fps}"
-        self.texts[1] = f"Generation: {self.simulation.generation_count}"
-        self.texts[2] = f"Survival rate: {self.simulation.latest_survival_rate}%"
-        self.texts[3] = ""
+        self.texts[1] = f"Population: {config.POPULATION}"
+        self.texts[2] = f"Synapses: {config.NUMBER_OF_SYNAPSES}"
+        self.texts[3] = f"Mutation rate: {config.MUTATION_RATE}"
+        self.texts[4] = ""
+        self.texts[5] = f"Generation: {self.simulation.generation_count}"
+        self.texts[6] = f"Survival rate: {self.simulation.latest_survival_rate}%"
+        self.texts[7] = ""
 
         if self.selected_block == None:
             return
 
-        self.texts[4] = f"Block: [{self.selected_block.pos_x}, {self.selected_block.pos_y}]"
+        self.texts[8] = f"Block: [{self.selected_block.pos_x}, {self.selected_block.pos_y}]"
 
         if self.selected_creature != None:
             synapses = sorted(self.selected_creature.brain.synapses, key=lambda x: x.output.input_value, reverse=True)
             for i, synapse in enumerate(synapses):
-                self.texts[5 + i] = f"{synapse.input.type.name} -> {synapse.output.type.name} (w: {round(synapse.weight, 4)}, a: {round(max(synapse.output.activation_value, 0) * 100)}%)"
+                self.texts[9 + i] = f"{synapse.input.type.name} -> {synapse.output.type.name} (w: {round(synapse.weight, 4)}, a: {round(max(tanh(synapse.output.input_value), 0) * 100)}%)"
 
             # for i in range(self.selected_creature.brain.num_synapses):
             #     synapse = self.selected_creature.brain.synapses[i]

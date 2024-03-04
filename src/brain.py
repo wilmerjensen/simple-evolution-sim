@@ -36,7 +36,8 @@ class NeuronInput:
         elif self.type is NeuronInputType.LocationY:
             self.input_value = utils.normalize_value(creature.block.pos_y, 0, creature.grid.size_y)
         elif self.type is NeuronInputType.PopulationDensityClose:
-            self.input_value = utils.normalize_value(creature.get_population_within_vision(), 0, (creature.vision_range * creature.vision_range) - 1)
+            max_creatures_in_vision = ((creature.vision_range * 2) + 1) * ((creature.vision_range * 2) + 1) - 1
+            self.input_value = utils.normalize_value(creature.get_population_within_vision(), 0, max_creatures_in_vision)
         elif self.type is NeuronInputType.Random:
             self.input_value = random.uniform(-1.0, 1.0)
         elif self.type is NeuronInputType.BlockedRight:
@@ -120,7 +121,6 @@ class Brain:
     def reset_output_neurons(self):
         for output in self.outputs:
             output.input_value = 0
-            output.activation_value = 0
 
     def stimulate_synapses(self):
         handled_inputs = set()

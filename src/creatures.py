@@ -5,18 +5,20 @@ import config
 
 class Creature:
 
-    from utils import get_random_color
-
-    def __init__(self, grid, block = None, brain = None, color = get_random_color()):
+    def __init__(self, grid, block = None, brain = None, color = None):
 
         from environment import Grid
         from environment import Block
         from brain import Brain
+        from utils import get_random_color
 
         self.grid: Grid = grid
         self.vision_range = config.VISION_RANGE
 
-        self.color = color
+        if color != None:
+            self.color = color
+        else:
+            self.color = get_random_color()
         #self.set_random_color()
 
         if brain != None:

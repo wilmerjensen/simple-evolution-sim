@@ -5,7 +5,9 @@ import config
 
 class Creature:
 
-    def __init__(self, grid, block = None, brain = None):
+    from utils import get_random_color
+
+    def __init__(self, grid, block = None, brain = None, color = get_random_color()):
 
         from environment import Grid
         from environment import Block
@@ -13,7 +15,9 @@ class Creature:
 
         self.grid: Grid = grid
         self.vision_range = config.VISION_RANGE
-        self.set_random_color()
+
+        self.color = color
+        #self.set_random_color()
 
         if brain != None:
             self.brain = brain
@@ -36,11 +40,14 @@ class Creature:
         self.brain.action()
 
     def create_offspring(self):
+        from utils import get_random_color
         new_brain = self.brain.create_copy()
+        new_color = self.color
         if random.random() <= config.MUTATION_RATE:
             new_brain.remove_random_synapse()
             new_brain.add_synapse()
-        child = Creature(self.grid, brain = new_brain)
+            new_color = get_random_color()
+        child = Creature(self.grid, brain = new_brain, color = new_color)
         child.brain.creature = child
         child.color = self.color
         return child

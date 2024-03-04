@@ -1,4 +1,5 @@
 import math
+import random
 
 def normalize_value(value, min, max):
         if max - min == 0:
@@ -13,3 +14,6 @@ def softmax(list):
     for x in list: 
         softmax_list.append(math.exp(x) / exponential_total)
     return softmax_list
+
+def get_random_color():
+    return (random.randint(25, 225), random.randint(25, 225), random.randint(25, 225))

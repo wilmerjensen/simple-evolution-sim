@@ -42,13 +42,13 @@ class Creature:
         self.brain.action()
 
     def create_offspring(self):
-        from utils import get_random_color
+        from utils import get_color_mutation
         new_brain = self.brain.create_copy()
         new_color = self.color
         if random.random() <= config.MUTATION_RATE:
             new_brain.remove_random_synapse()
             new_brain.add_synapse()
-            new_color = get_random_color()
+            new_color = get_color_mutation(self.color)
         child = Creature(self.grid, brain = new_brain, color = new_color)
         child.brain.creature = child
         child.color = self.color

@@ -17,3 +17,6 @@ def softmax(list):
 
 def get_random_color():
     return (random.randint(25, 225), random.randint(25, 225), random.randint(25, 225))
+
+def get_color_mutation(color):
+     return (color[0] + random.randint(-10, 10), color[1] + random.randint(-10, 10), color[2] + random.randint(-10, 10))

@@ -53,17 +53,13 @@ class NeuronOutput:
     from creatures import Creature
 
     def __init__(self, type: NeuronInputType) -> None:
-        #self.brain = brain
         self.type = type
         self.input_value = 0
-        self.activation_value = 0
-
-    def calculate_activation_value(self):
-        self.activation_value = math.tanh(self.input_value)
 
     def activation(self, creature: Creature) -> bool:
         cutoff = random.random()
-        if self.activation_value > cutoff:
+        activation = math.tanh(self.input_value)
+        if activation > cutoff:
             self.call_output_function(creature)
             return True
         return False
@@ -91,7 +87,6 @@ class Synapse:
     def stimulate(self):
         weighted_input = self.input.input_value * self.weight
         self.output.input_value += weighted_input
-        self.output.activation_value += math.tanh(weighted_input)
 
 class Brain:
 
@@ -134,12 +129,12 @@ class Brain:
                 synapse.input.calculate_input_value(self.creature)
                 handled_inputs.add(synapse.input)
             synapse.stimulate()
-        self.outputs = sorted(self.outputs, key=lambda x: x.activation_value, reverse=True)
+        self.outputs = sorted(self.outputs, key=lambda x: x.input_value, reverse=True)
 
     def call_output_activations(self):
         for output in self.outputs:
-            if output.activation_value <= 0:
-                # outputs are ordered by activation_value, if we get here no other outputs will trigger either
+            if output.input_value <= 0:
+                # outputs are ordered by input_value, if we get here no other outputs will trigger either
                 break 
             fired = output.activation(self.creature)
             if fired == True:

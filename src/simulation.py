@@ -104,6 +104,13 @@ class SimulationState:
         if event.key == pygame.K_DOWN:
             if self.window.selected_block != None and self.window.selected_block.pos_y < self.window.grid_size_y - 1:
                 self.window.select_block(self.window.selected_block.get_adjacent_block("down"))
+        if event.key == pygame.K_c:
+            self.clear_all_walls()
+
+    def clear_all_walls(self):
+        for x in range(self.window.grid_size_x):
+            for y in range(self.window.grid_size_y):
+                self.window.grid.blocks[x][y].is_wall = False
 
     def toggle_pause(self):
         self.paused = not self.paused

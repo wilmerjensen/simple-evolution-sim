@@ -32,7 +32,7 @@ class Grid:
     def draw_grid(self):
         self.window.display.fill(self.color_bg)
         for kz in self.kill_zones:
-           pygame.draw.rect(self.window.display, (225, 125, 125), kz, 0)
+           pygame.draw.rect(self.window.display, (210, 190, 200), kz, 0)
         for x in range(self.size_x):
             for y in range(self.size_y):
                 if self.blocks[x][y].is_wall == True:

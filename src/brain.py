@@ -14,6 +14,7 @@ class NeuronInputType(Enum):
     BlockedLeft = 6
     BlockedUp = 7
     BlockedDown = 8
+    Age = 9
 
 class NeuronOutputType(Enum):
     MoveRight = 1
@@ -48,6 +49,8 @@ class NeuronInput:
             self.input_value = -1 if creature.move_is_possible("up") else 1
         elif self.type is NeuronInputType.BlockedDown:
             self.input_value = -1 if creature.move_is_possible("down") else 1
+        elif self.type is NeuronInputType.Age:
+            self.input_value = utils.normalize_value(creature.age, 0, config.STEPS_PER_GENERATION - 1)
 
 class NeuronOutput:
 

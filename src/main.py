@@ -12,10 +12,16 @@ def main():
     
     simulation_state = SimulationState()
 
-    kill_start_x = ((config.GRID_SIZE_X * config.BLOCK_SIZE) / 100) * 5
+    kill_start_x = ((config.GRID_SIZE_X * config.BLOCK_SIZE) / 100) * 25
     kill_start_y = 0
-    kill_width = ((config.GRID_SIZE_X * config.BLOCK_SIZE) / 100) * 90
+    kill_width = ((config.GRID_SIZE_X * config.BLOCK_SIZE) / 100) * 50
     kill_height = config.GRID_SIZE_Y * config.BLOCK_SIZE
+    simulation_state.window.grid.add_kill_zone((kill_start_x, kill_start_y), (kill_width, kill_height))
+
+    kill_start_x = 0
+    kill_start_y = ((config.GRID_SIZE_X * config.BLOCK_SIZE) / 100) * 25
+    kill_width = config.GRID_SIZE_Y * config.BLOCK_SIZE
+    kill_height = ((config.GRID_SIZE_X * config.BLOCK_SIZE) / 100) * 50
     simulation_state.window.grid.add_kill_zone((kill_start_x, kill_start_y), (kill_width, kill_height))
 
     while running:

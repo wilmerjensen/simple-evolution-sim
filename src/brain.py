@@ -23,9 +23,6 @@ class NeuronOutputType(Enum):
     MoveDown = 4
     MoveRandom = 5
 
-class NeuronInternalType(Enum):
-    Internal = 99
-
 class NeuronInput:
 
     from creatures import Creature
@@ -84,20 +81,9 @@ class NeuronOutput:
             creature.move_random()
         return
 
-class NeuronInternal:
-
-    def __init__(self, index) -> None:
-        self.index = index
-        self.input_value = 0
-        self.output_value = 0
-        self.type = NeuronInternalType.Internal # for sorting in stimulate_synapses
-
-    def calculate_output_value(self):
-        self.output_value = math.tanh(self.input_value)
-
 class Synapse:
 
-    def __init__(self, input, output, weight = None):
+    def __init__(self, input: NeuronInput, output: NeuronOutput, weight = None):
         self.input = input
         self.output = output
         if weight != None:
@@ -119,19 +105,14 @@ class Brain:
 
         self.inputs = [NeuronInput(type) for type in NeuronInputType]
         self.outputs = [NeuronOutput(type) for type in NeuronOutputType]
-        self.interneurons = [NeuronInternal(index) for index in range(config.INTERNAL_NEURONS)]
-
         self.synapses: list[Synapse] = []
         
         if copy_of != None:
             for copy_synapse in copy_of.synapses:
-                #self.add_synapse(copy_synapse.input.type, copy_synapse.output.type, copy_synapse.weight)
-                self.add_synapse(copy_of=copy_synapse)
+                self.add_synapse(copy_synapse.input.type, copy_synapse.output.type, copy_synapse.weight)
         else:
             for i in range(self.num_synapses):
                 self.add_synapse()
-
-        self.synapses = sorted(self.synapses, key=lambda x: x.input.type.value, reverse=False)
 
     def create_copy(self):
         brain_copy = Brain(self.creature, self)
@@ -141,25 +122,12 @@ class Brain:
     def action(self):
         self.reset_output_neurons()
         self.stimulate_synapses()
-        self.calculate_internal_outputs()
         self.call_output_activations()
 
     def reset_output_neurons(self):
         for output in self.outputs:
             output.input_value = 0
-        for internal in self.interneurons:
-            internal.input_value = 0
-            internal.output_value = 0
 
-    # def stimulate_synapses(self):
-    #     handled_inputs = set()
-    #     for synapse in self.synapses:
-    #         if synapse.input not in handled_inputs:
-    #             synapse.input.calculate_input_value(self.creature)
-    #             handled_inputs.add(synapse.input)
-    #         synapse.stimulate()
-    #     self.outputs = sorted(self.outputs, key=lambda x: x.input_value, reverse=True)
-            
     def stimulate_synapses(self):
         handled_inputs = set()
         for synapse in self.synapses:
@@ -168,10 +136,6 @@ class Brain:
                 handled_inputs.add(synapse.input)
             synapse.stimulate()
         self.outputs = sorted(self.outputs, key=lambda x: x.input_value, reverse=True)
-
-    def calculate_internal_outputs(self):
-        for internal in self.interneurons:
-            internal.calculate_output_value()
 
     def call_output_activations(self):
         for output in self.outputs:
@@ -212,43 +176,22 @@ class Brain:
                 synapse_list.append(s)
         return synapse_list
 
-    # def add_synapse(self, input_type = None, output_type = None, weight = None):
-    #     if input_type != None:
-    #         input = self.get_neuron_input(input_type)
-    #     else:
-    #         input = random.choice(self.inputs)
-    #     if output_type != None:
-    #         output = self.get_neuron_output(output_type)
-    #     else:
-    #         output = random.choice(self.outputs)
-        
-    #     if weight == None:
-    #         synapse = Synapse(input, output)
-    #     else:
-    #         synapse = Synapse(input, output, weight)
-
-    #     self.synapses.append(synapse)
-
-    def add_synapse(self, copy_of: Synapse = None):
-        inputs = self.inputs + self.interneurons
-        outputs = self.outputs + self.interneurons
-        if copy_of != None:
-            if type(copy_of.input).__name__ == "NeuronInternal":
-                input = self.interneurons[copy_of.input.index]
-            else:
-                input = self.get_neuron_input(copy_of.input.type)
-            if type(copy_of.output).__name__ == "NeuronInternal":
-                output = self.interneurons[copy_of.output.index]
-            else:
-                output = self.get_neuron_output(copy_of.output.type)
-            synapse = Synapse(input, output, copy_of.weight)
+    def add_synapse(self, input_type = None, output_type = None, weight = None):
+        if input_type != None:
+            input = self.get_neuron_input(input_type)
         else:
-            input = random.choice(inputs)
-            output = random.choice(outputs)
+            input = random.choice(self.inputs)
+        if output_type != None:
+            output = self.get_neuron_output(output_type)
+        else:
+            output = random.choice(self.outputs)
+        
+        if weight == None:
             synapse = Synapse(input, output)
+        else:
+            synapse = Synapse(input, output, weight)
 
         self.synapses.append(synapse)
-        return
 
     def get_neuron_input(self, input_type):
         for input in self.inputs:
